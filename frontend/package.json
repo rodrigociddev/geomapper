@@ -11,8 +11,10 @@
     "windows": "react-native run-windows"
   },
   "dependencies": {
+    "@types/react-native-vector-icons": "^6.4.18",
     "react": "18.3.1",
-    "react-native": "0.75.3",
+    "react-native": "^0.75.3",
+    "react-native-vector-icons": "^10.2.0",
     "react-native-windows": "^0.75.3"
   },
   "devDependencies": {
@@ -28,10 +30,10 @@
     "babel-jest": "^29.6.3",
     "eslint": "^8.19.0",
     "jest": "^29.6.3",
+    "metro-config": "^0.80.12",
     "prettier": "2.8.8",
     "react-test-renderer": "18.3.1",
-    "typescript": "5.0.4",
-    "metro-config": "^0.80.12"
+    "typescript": "5.0.4"
   },
   "engines": {
     "node": ">=18"
