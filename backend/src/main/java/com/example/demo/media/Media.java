@@ -1,11 +1,12 @@
 package com.example.demo.media;
 
 public class Media {
-    private double longitude;
-    private double latitude;
+    private String filePath;
     private String name;
     private String annotations;
-    private int orderCount;
+
+    private double longitude;
+    private double latitude;
 
 
     public Media(double latitude, double longitude, String name) {
@@ -44,14 +45,6 @@ public class Media {
 
     public void setAnnotations(String annotations) {
         this.annotations = annotations;
-    }
-
-    public int getOrderCount() {
-        return orderCount;
-    }
-
-    public void setOrderCount(int orderCount) {
-        this.orderCount = orderCount;
     }
 
     @Override
