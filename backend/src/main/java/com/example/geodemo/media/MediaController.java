@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/media")
 public class MediaController {
 
-    private final MediaService mediaService;
+    private final com.example.geodemo.media.MediaService mediaService;
 
     @Autowired
-    public MediaController(MediaService mediaService) {
+    public MediaController(com.example.geodemo.media.MediaService mediaService) {
         this.mediaService = mediaService;
     }
 

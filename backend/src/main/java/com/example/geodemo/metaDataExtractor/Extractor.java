@@ -1,4 +1,4 @@
-ackage com.example.geodemo.metaDataExtraction;
+package com.example.geodemo.metaDataExtraction;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.lang.GeoLocation;

@@ -1,6 +1,6 @@
-package com.example.demo.generator;
+package com.example.geodemo.generator;
 
-import com.example.demo.media.Media;
+import com.example.geodemo.media.Media;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
