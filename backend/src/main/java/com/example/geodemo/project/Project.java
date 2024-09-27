@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 @Repository
 public class Project {
-    private String name;
+    private String name = "GeoMapper demo";
     private List<Media> mediaList;
     static public HashMap<String, Media> mediaLookUp;
 

@@ -17,8 +17,8 @@ public class ProjectService {
     public static Project project;
 
     @Autowired
-    public ProjectService() {
-        this.project = new Project();
+    public ProjectService(Project project) {
+        this.project =project;
     }
 
     //uploads file to project instance

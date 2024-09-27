@@ -8,11 +8,13 @@ import static com.example.geodemo.project.ProjectService.project;
 @Service
 public class MediaService {
 
-    private static ProjectService search = new ProjectService();
+    private static ProjectService projectService;
 
-
+    public MediaService(ProjectService projectService){
+        this.projectService = projectService;
+    }
     public String renameMedia(String oldName, String newName){
-        Media media = search.searchMedia(oldName);
+        Media media = projectService.searchMedia(oldName);
 
         if(media != null){
             project.deleteMedia(media);
@@ -25,7 +27,7 @@ public class MediaService {
     }
 
     public String addAnnotations(String mediaName,String annotation){
-        Media media = search.searchMedia(mediaName);
+        Media media = projectService.searchMedia(mediaName);
 
         if(media != null){
             project.deleteMedia(media);
