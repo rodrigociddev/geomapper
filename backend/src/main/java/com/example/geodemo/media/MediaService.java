@@ -1,6 +1,7 @@
 package com.example.geodemo.media;
 
 import com.example.geodemo.project.ProjectService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static com.example.geodemo.project.ProjectService.project;
@@ -8,8 +9,8 @@ import static com.example.geodemo.project.ProjectService.project;
 @Service
 public class MediaService {
 
-    private static ProjectService projectService;
-
+    private final ProjectService projectService;
+     @Autowired
     public MediaService(ProjectService projectService){
         this.projectService = projectService;
     }

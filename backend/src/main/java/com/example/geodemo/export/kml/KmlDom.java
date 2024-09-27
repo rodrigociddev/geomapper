@@ -25,6 +25,7 @@ public class KmlDom {
 
         Element rootElement = kmlDoc.createElement("kml");
         rootElement.setAttribute("xmlns","http://www.opengis.net/kml/2.2");
+        rootElement.setAttribute("xmlns:gx", "http://www.google.com/kml/ext/2.2" );
         kmlDoc.appendChild(rootElement);
 
         Element document = kmlDoc.createElement("Document");

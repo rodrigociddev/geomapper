@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/export")
@@ -21,15 +22,15 @@ public class ExportController {
     }
 
     @PostMapping("/kml")
-    public void exportKml(@RequestParam String filePath,@RequestParam String fileName) throws ParserConfigurationException, TransformerException {
-        exportService.export(filePath, fileName);
+    public void exportKml(@RequestParam String filePath,@RequestParam String fileName) throws ParserConfigurationException, TransformerException, IOException {
+        exportService.exportKml(filePath, fileName);
 
     }
 
 
     @PostMapping("kmz")
-    public void exportKmz(@RequestParam String filePath){
-
+    public void exportKmz(@RequestParam String filePath, @RequestParam String fileName) throws ParserConfigurationException, IOException, TransformerException {
+        exportService.exportKmz(filePath, fileName);
     }
 
 }

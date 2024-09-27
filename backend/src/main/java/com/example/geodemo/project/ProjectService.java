@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,12 +20,15 @@ public class ProjectService {
 
     @Autowired
     public ProjectService(Project project) {
-        this.project =project;
+        ProjectService.project =project;
     }
 
     //uploads file to project instance
     public  String uploadFile(MultipartFile file) {
+
+
         if (file != null) {
+
             // Log file information
             System.out.println("Received file:");
             System.out.println("Filename: " + file.getOriginalFilename());
@@ -34,6 +39,7 @@ public class ProjectService {
         }
 
         try (InputStream inputStream = file.getInputStream()) {
+
             Media media = extractor.extractMetadata(inputStream, file.getOriginalFilename());
 
             if (media != null) {
@@ -41,13 +47,23 @@ public class ProjectService {
                 if (project.containsMedia(media.getName())) {
                     return "Media named: " + media.getName() + " is already part of the project";
                 } else {
+
                     project.addMedia(media);
+
+
+
+
+
                 }
 
                // if (!globalLookUp.containsKey(media.getName())) {
               //      globalLookUp.put(media.getName(), media);
                // }
-
+                try{
+                    saveMedia(file);
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
+                }
                 return "File processed successfully, added to project";
             } else {
                 return "No GPS data found in the file";
@@ -55,6 +71,7 @@ public class ProjectService {
         } catch (Exception e) {
             return "Error processing the file: " + e.getMessage();
         }
+
     }
 
 
@@ -100,5 +117,13 @@ public class ProjectService {
         } else {
             return "Media not found";
         }
+    }
+
+    public static void saveMedia(MultipartFile multipartFile) throws IOException {
+        String workingDir = System.getProperty("user.dir");
+        System.out.println("working dir: " + workingDir);
+        File destFile = new File(workingDir + File.separator+"userMedia"+File.separator + multipartFile.getOriginalFilename());
+        multipartFile.transferTo(destFile);
+
     }
 }

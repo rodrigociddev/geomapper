@@ -4,6 +4,7 @@ package com.example.geodemo.project;
 import com.example.geodemo.media.Media;
 import org.springframework.stereotype.Repository;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
@@ -17,9 +18,15 @@ public class Project {
     public Project() {
         mediaList = new ArrayList<>();
         mediaLookUp = new HashMap<>();
+
+        //create userMedia directory
+        String workingDir = System.getProperty("user.dir") + File.separator + "userMedia";
+        File dir = new File(workingDir);
+        dir.mkdirs();
+
     }
 
-    // adding media to both the list(maintians order) and lookup
+    // adding media to both the list(maintains order) and lookup
     public void addMedia(Media media) {
         mediaList.add(media);
         mediaLookUp.put(media.getName(), media);
@@ -35,7 +42,7 @@ public class Project {
         return mediaList;
     }
 
-    //looking up by name thru hashmap
+    //looking up by name through hashmap
     public Media getMediaByName(String name) {
         return mediaLookUp.get(name);
     }
