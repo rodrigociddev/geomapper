@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-@Component
+@Component("KmzExporter")
 public class KmzExporter implements Exporter {
 
     KmlBuilder kmlBuilder;

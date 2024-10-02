@@ -9,7 +9,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 
-@Component
+@Component("KmlExporter")
 public class KmlExporter implements Exporter {
 
     KmlBuilder kmlBuilder;

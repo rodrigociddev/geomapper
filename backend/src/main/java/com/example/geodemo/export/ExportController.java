@@ -11,7 +11,7 @@ import javax.xml.transform.TransformerException;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/export")
+@RequestMapping("/")
 public class ExportController {
 
     @Autowired
@@ -21,16 +21,13 @@ public class ExportController {
         this.exportService=exportService;
     }
 
-    @PostMapping("/kml")
-    public void exportKml(@RequestParam String filePath,@RequestParam String fileName) throws ParserConfigurationException, TransformerException, IOException {
-        exportService.exportKml(filePath, fileName);
-
-    }
-
-
-    @PostMapping("kmz")
-    public void exportKmz(@RequestParam String filePath, @RequestParam String fileName) throws ParserConfigurationException, IOException, TransformerException {
-        exportService.exportKmz(filePath, fileName);
+    @PostMapping("/export")
+    public void export(@RequestParam ExportFormat format,
+                       @RequestParam String filePath,
+                       @RequestParam String fileName)
+            throws ParserConfigurationException, IOException, TransformerException {
+        System.out.println(format);
+        exportService.export(format, filePath, fileName);
     }
 
 }
