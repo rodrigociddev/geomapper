@@ -1,26 +1,31 @@
+// App.tsx
 import React from 'react';
-import { SafeAreaView, StatusBar, StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import LandingPage from './components/LandingPage';
-import TopBar from './components/TopBar';
-import GeoMapperTitle from './components/GeoMapperTitle';
-import Buttons from './components/Button';
-import { MinusIcon, SquareIcon, XIcon } from './components/IconComponents';
+import MainAppPage from './components/MainAppPage'; // Import the new page
+
+const Stack = createStackNavigator();
 
 const App = () => {
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
-      {/* The main LandingPage component that encapsulates everything */}
-      <LandingPage />
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Landing">
+        {/* Landing Page */}
+        <Stack.Screen 
+          name="Landing" 
+          component={LandingPage} 
+          options={{ headerShown: false }} // Hides the default header bar
+        />
+        {/* Main App Page */}
+        <Stack.Screen 
+          name="MainApp" 
+          component={MainAppPage} 
+          options={{ title: 'Main App' }} // Title of the new page
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFF',
-  },
-});
 
 export default App;
