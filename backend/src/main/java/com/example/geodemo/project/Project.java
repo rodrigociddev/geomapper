@@ -37,6 +37,18 @@ public class Project {
         mediaLookUp.remove(media.getName(), media);
     }
 
+    public void deleteAllMedia(){
+        mediaList.clear();
+        mediaLookUp.clear();
+    }
+
+    public boolean checkEmpty(){
+        if (mediaLookUp.isEmpty() && mediaList.isEmpty()){
+            return true;
+        } else {
+            return false;}
+    }
+
     //returns all media
     public List<Media> getProjectList() {
         return mediaList;
