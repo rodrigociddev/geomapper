@@ -119,6 +119,15 @@ public class ProjectService {
         }
     }
 
+        public String deleteAllMedia(){
+        if (project.checkEmpty()){
+            return "Project is already empty";
+        } else {
+            project.deleteAllMedia();
+            return "Media has been deleted";
+        }
+    }
+
     public static void saveMedia(MultipartFile multipartFile) throws IOException {
         String workingDir = System.getProperty("user.dir");
         System.out.println("working dir: " + workingDir);
