@@ -1,6 +1,8 @@
-package com.example.geodemo.export.kml;
+package com.example.geodemo.export.exporters;
 
 import com.example.geodemo.export.Exporter;
+import com.example.geodemo.export.builder.KmlBuilder;
+import com.example.geodemo.export.builder.KmlDom;
 import org.springframework.stereotype.Component;
 
 import javax.xml.parsers.ParserConfigurationException;

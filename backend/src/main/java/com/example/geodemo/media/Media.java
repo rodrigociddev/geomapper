@@ -9,10 +9,18 @@ public class Media {
     private double latitude;
 
 
-    public Media(double latitude, double longitude, String name) {
+
+
+    public Media(double latitude, double longitude, String name, String annotation){
         this.latitude = latitude;
         this.longitude = longitude;
         this.name = name;
+        this.annotations = annotation;
+    }
+
+    public Media(double latitude, double longitude, String name) {
+
+        this(latitude,longitude,name,"");
     }
 
     public Media() {

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -29,5 +30,14 @@ public class ExportController {
         System.out.println(format);
         exportService.export(format, filePath, fileName);
     }
+    @PostMapping("/loadProject")
+    public void importProject(@RequestParam String filePath) throws IOException, ParserConfigurationException, SAXException {
+        exportService.loadProject(filePath);
+
+    }
+
+
+
+
 
 }

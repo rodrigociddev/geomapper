@@ -1,32 +1,25 @@
-package com.example.geodemo.export.kmz;
+package com.example.geodemo.export.exporters;
 
 import com.example.geodemo.export.Exporter;
-import com.example.geodemo.export.kml.KmlBuilder;
-import com.example.geodemo.export.kml.KmlDom;
-import com.example.geodemo.export.kml.KmlExporter;
-import com.fasterxml.jackson.databind.node.TextNode;
+import com.example.geodemo.export.builder.KmlBuilder;
+import com.example.geodemo.export.builder.KmlDom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.nio.file.Files;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @Component("KmzExporter")
-public class KmzExporter implements Exporter {
+public class  KmzExporter implements Exporter {
 
     KmlBuilder kmlBuilder;
 
@@ -58,7 +51,18 @@ public class KmzExporter implements Exporter {
         }
 
         //write kml to the zip file
-        ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(filePath+File.separator+fileName+".kmz"));
+       buildArchive(dom,new File(System.getProperty("user.dir")+File.separator+"userMedia"), filePath, fileName+".kmz");
+
+
+
+
+
+
+
+
+    } 
+    public void buildArchive(Document dom, File mediaDir, String filePath, String fileName) throws IOException, TransformerConfigurationException {
+        ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(filePath+File.separator+fileName));
         zipOut.putNextEntry(new ZipEntry("doc.kml"));
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -68,25 +72,24 @@ public class KmzExporter implements Exporter {
         try (StringWriter writer = new StringWriter()) {
             transformer.transform(new DOMSource(dom), new StreamResult(writer));
             zipOut.write(writer.toString().getBytes());
+        } catch (TransformerException e) {
+            throw new RuntimeException(e);
         }
         zipOut.closeEntry();
 
-        File dir = new File(System.getProperty("user.dir")+File.separator+"userMedia");
 
-        for (File file:dir.listFiles()){
-            ZipEntry zipEntry = new ZipEntry("files/"+ file.getName());
-            zipOut.putNextEntry(zipEntry);
-            Files.copy(file.toPath(), zipOut);
-            zipOut.closeEntry();
+        File[] files = mediaDir.listFiles();
+        if(files == null){
+            System.out.println("no media files");
+        }else{
+            for (File file:files){
+                ZipEntry zipEntry = new ZipEntry("files/"+ file.getName());
+                zipOut.putNextEntry(zipEntry);
+                Files.copy(file.toPath(), zipOut);
+                zipOut.closeEntry();
+            }
         }
+
         zipOut.close();
-
-
-
-
-
-
-
-
     }
 }
