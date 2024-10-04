@@ -39,6 +39,11 @@ public class ProjectController {
         return projectService.deleteMedia(name);
     }
 
+    @DeleteMapping("/deleteAll")
+    public String deleteAllMedia() {
+        return projectService.deleteAllMedia();
+    }
+
     //prints by most recently modified
     @GetMapping("/order")
     public void printMediaList() {
