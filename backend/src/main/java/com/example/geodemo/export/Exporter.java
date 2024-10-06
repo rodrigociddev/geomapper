@@ -6,6 +6,13 @@ import javax.xml.transform.TransformerException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+/**
+ * Describes an Exporter
+ * Implemented by:
+ * KmlExporter
+ * KmzExporter
+ * ProjectExporter
+ */
 public interface Exporter {
 
     void export(String filePath, String fileName) throws TransformerException, ParserConfigurationException, IOException;

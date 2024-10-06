@@ -11,10 +11,14 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 
+/**
+ * Builds the KML using KmlBuilder and saves it on disk
+ */
 @Component("KmlExporter")
 public class KmlExporter implements Exporter {
 
     KmlBuilder kmlBuilder;
+
     public KmlExporter(KmlBuilder kmlBuilder){
         this.kmlBuilder = kmlBuilder;
     }

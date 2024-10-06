@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
@@ -17,6 +16,11 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+/**
+ * Utilizes KmlBuilder to generate doc.kml, adds the image to the description(to be changed)
+ * and packages it together with the media files in /files
+ */
 
 @Component("KmzExporter")
 public class  KmzExporter implements Exporter {
@@ -53,15 +57,18 @@ public class  KmzExporter implements Exporter {
         //write kml to the zip file
        buildArchive(dom,new File(System.getProperty("user.dir")+File.separator+"userMedia"), filePath, fileName+".kmz");
 
+    }
 
-
-
-
-
-
-
-    } 
-    public void buildArchive(Document dom, File mediaDir, String filePath, String fileName) throws IOException, TransformerConfigurationException {
+    /**
+     *
+     * @param dom KML document object model
+     * @param mediaDir directory where our media is stored on disk
+     * @param filePath export path
+     * @param fileName KMZ filename
+     * @throws IOException
+     * @throws TransformerConfigurationException
+     */
+    protected void buildArchive(Document dom, File mediaDir, String filePath, String fileName) throws IOException, TransformerConfigurationException {
         ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(filePath+File.separator+fileName));
         zipOut.putNextEntry(new ZipEntry("doc.kml"));
 

@@ -8,7 +8,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -17,12 +16,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+/**
+ * Load .gmp file into application
+ * generates Media objects from doc.kml
+ * copies user media into /userMedia
+ */
 @Component
 public class Importer {
 
@@ -40,7 +42,7 @@ public class Importer {
 
     }
 
-    public void extractMedia(String filePath, String destinationPath) throws IOException {
+    private void extractMedia(String filePath, String destinationPath) throws IOException {
         try(ZipFile zipFile = new ZipFile(filePath)){
 
 
@@ -62,7 +64,7 @@ public class Importer {
 
 
     }
-    public void buildMedia(String filePath) throws ParserConfigurationException {
+    private void buildMedia(String filePath) throws ParserConfigurationException {
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);

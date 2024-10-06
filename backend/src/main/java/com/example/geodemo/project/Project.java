@@ -1,18 +1,29 @@
 package com.example.geodemo.project;
 
 
+import com.drew.tools.FileUtil;
 import com.example.geodemo.media.Media;
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * Class that represents an instance of the project
+ *
+ */
 @Repository
 public class Project {
     private String name = "GeoMapper demo";
+
+    //Collection of media imported by the user
     private List<Media> mediaList;
+
+    //hashMap of the same media objects for fast lookup
     static public HashMap<String, Media> mediaLookUp;
 
     public Project() {
@@ -20,9 +31,22 @@ public class Project {
         mediaLookUp = new HashMap<>();
 
         //create userMedia directory
-        String workingDir = System.getProperty("user.dir") + File.separator + "userMedia";
-        File dir = new File(workingDir);
-        dir.mkdirs();
+
+        //wipe if exists
+        File userMediaDir = new File("userMedia");
+        if(userMediaDir.exists()){
+            try{
+                FileUtils.deleteDirectory(userMediaDir);
+            }catch(IOException e){
+                System.out.println("failed to delete existing userMedia");
+                System.out.println(e.toString());
+                System.exit(1);
+            }
+
+        }userMediaDir.mkdirs();
+
+
+
 
     }
 

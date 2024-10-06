@@ -1,5 +1,8 @@
 package com.example.geodemo.media;
 
+/**
+ * Represents Media added by the user
+ */
 public class Media {
     private String filePath;
     private String name;

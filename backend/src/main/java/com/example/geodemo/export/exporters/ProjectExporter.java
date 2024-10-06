@@ -11,6 +11,9 @@ import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Utilizes KmzExporter to save current state of the project to disk with extension .gmp
+ */
 @Component("ProjectExporter")
 public class ProjectExporter implements Exporter {
     KmlBuilder kmlBuilder;

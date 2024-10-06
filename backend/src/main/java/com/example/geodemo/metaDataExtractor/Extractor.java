@@ -1,4 +1,4 @@
-package com.example.geodemo.metaDataExtraction;
+package com.example.geodemo.metaDataExtractor;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.lang.GeoLocation;
@@ -8,8 +8,12 @@ import com.example.geodemo.media.Media;
 
 import java.io.InputStream;
 
+/**
+ * Contains static methods for extracting metadata from media files using MetaDataExtractor api
+ * https://github.com/drewnoakes/metadata-extractor
+ */
 public class Extractor {
-    //contians extractor, uses library to extract information from media
+
     public static Media extractMetadata(InputStream inputStream, String fileName) {
         try {
             Metadata metadata = ImageMetadataReader.readMetadata(inputStream);

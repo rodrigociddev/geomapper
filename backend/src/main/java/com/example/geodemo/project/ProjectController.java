@@ -5,8 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Map;
-
+/**
+ * RestController for Project
+ */
 @RestController
 @RequestMapping("/project")
 public class ProjectController {
@@ -18,12 +19,19 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-    @PostMapping("/upload")
-    public String uploadFile(@RequestParam("file") MultipartFile file) {
+    //add Media from File upload
+    //must have file parameter
+    @PostMapping(value = "/upload",  consumes = "multipart/form-data" )
+    public String addMedia(@RequestParam("file") MultipartFile file) {
         return projectService.uploadFile(file);
     }
 
-
+    //Add media from file path
+    //must have String filePath parameter
+    @PostMapping(value = "/upload", params = "filePath")
+    public String addMedia(@RequestParam String filePath){
+        return projectService.addFile(filePath);
+    }
     @GetMapping("/search/{name}")
     public Media searchMedia(@PathVariable String name) {
         return projectService.searchMedia(name);

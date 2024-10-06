@@ -1,14 +1,14 @@
 package com.example.geodemo.export.builder;
 
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-
+/**
+ * Represents a Document object model of the KML file
+ */
 public class KmlDom {
 
     public Document kmlDoc;

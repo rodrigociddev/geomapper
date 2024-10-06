@@ -6,6 +6,10 @@ import org.springframework.stereotype.Service;
 
 import static com.example.geodemo.project.ProjectService.project;
 
+/**
+ * Methods for manipulating Media objects
+ * Used by MediaController
+ */
 @Service
 public class MediaService {
 

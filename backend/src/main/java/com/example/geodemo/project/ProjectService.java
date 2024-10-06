@@ -1,14 +1,14 @@
 package com.example.geodemo.project;
 
 import com.example.geodemo.media.Media;
-import com.example.geodemo.metaDataExtraction.Extractor;
+
+import com.example.geodemo.metaDataExtractor.Extractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.file.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,10 +74,64 @@ public class ProjectService {
 
     }
 
+    public String addFile(String filePath){
+        Path mediaPath = Paths.get(filePath);
+
+
+
+        if(Files.exists(mediaPath) && !Files.isDirectory(mediaPath)){
+            try{
+                System.out.println("File at : " + filePath);
+                System.out.println("Filename: " + mediaPath.getFileName());
+                System.out.println("Size: " + Files.size(mediaPath) + " bytes");
+                System.out.println("Content-Type: " + Files.probeContentType(mediaPath));
+
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+
+        }else{
+            return "no valid file at: " + filePath;
+
+        }
+
+
+        try(InputStream mediaStream = Files.newInputStream(mediaPath)){
+            Media media = extractor.extractMetadata(mediaStream, mediaPath.getFileName().toString());
+            if (media != null) {
+
+                if (project.containsMedia(media.getName())) {
+                    return "Media named: " + media.getName() + " is already part of the project";
+                } else {
+
+                    project.addMedia(media);
+
+
+
+
+
+                }
+
+                // if (!globalLookUp.containsKey(media.getName())) {
+                //      globalLookUp.put(media.getName(), media);
+                // }
+
+                    saveMedia(filePath);
+
+                return "File processed successfully, added to project";
+            } else {
+                return "No GPS data found in the file";
+            }
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            return "error processing file: " + e.getMessage();
+        }
+    }
 
 
     public String renameProject(String name){
         project.setName(name);
+        System.out.println("Project name has been successfully named to" + project.getName());
         return "Project name has been successfully named to" + project.getName();
     }
 
@@ -93,7 +147,7 @@ public class ProjectService {
         }
     }
 
-    //searches the media in a project, returns media object w featues of the media
+    //searches the media in a project, returns media object w features of the media
     public Media searchMedia(String name) {
         try {
             //Media media = globalLookUp.get(name);
@@ -101,6 +155,7 @@ public class ProjectService {
             if (media == null) {
                 System.out.println("Media named: " + name + " does not exist");
             }
+            System.out.println("Found " + media.getName());
             return media;
         } catch (Exception e) {
             System.out.println("Error searching for media: " + e.getMessage());
@@ -111,8 +166,10 @@ public class ProjectService {
 
     public String deleteMedia(String name){
         Media media = searchMedia(name);
+        String mediaName = media.getName();
         if (media != null ) {
             project.deleteMedia(media);
+            System.out.println(mediaName+ " deleted sucessfully");
             return "Media deleted successfully.";
         } else {
             return "Media not found";
@@ -121,18 +178,42 @@ public class ProjectService {
 
         public String deleteAllMedia(){
         if (project.checkEmpty()){
+            System.out.println();
             return "Project is already empty";
         } else {
             project.deleteAllMedia();
             return "Media has been deleted";
         }
     }
+    //static methods for saving user media to temporary directory in {working directory}/userMedia
+    //(to prevent issues if the user modifies the original media we make hard copies of the media imported)
 
-    public static void saveMedia(MultipartFile multipartFile) throws IOException {
+    private static void saveMedia(MultipartFile multipartFile) throws IOException {
         String workingDir = System.getProperty("user.dir");
         System.out.println("working dir: " + workingDir);
         File destFile = new File(workingDir + File.separator+"userMedia"+File.separator + multipartFile.getOriginalFilename());
         multipartFile.transferTo(destFile);
+
+    }
+    private static void saveMedia(String filePath){
+        Path mediaPath = Paths.get(filePath);
+        Path outputPath = Paths.get("userMedia/" + mediaPath.getFileName());
+        try{
+            Files.copy(mediaPath,outputPath);
+        }catch(FileAlreadyExistsException e){
+            System.out.println("File already exists");
+            System.out.println(e.getMessage());
+
+        }catch(DirectoryNotEmptyException e){
+            System.out.println("Directory not empty Exception");
+            System.out.println(e.getMessage());
+
+        }catch(SecurityException e){
+            System.out.println("File permission exception: ");
+            System.out.println(e.toString());
+        }catch(Exception e){
+            System.out.println("Save media exception: " + e.toString());
+        }
 
     }
 }
