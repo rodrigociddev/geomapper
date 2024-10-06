@@ -1,0 +1,403 @@
+{
+	"info": {
+		"_postman_id": "8a2ca57d-b88a-4b4f-a0b3-1498333d1eef",
+		"name": "Geomapper",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38633707"
+	},
+	"item": [
+		{
+			"name": "Project",
+			"item": [
+				{
+					"name": "Add media (file upload)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "postman-cloud:///1ef7c811-8c8c-4150-ac74-8fefb076e920"
+								},
+								{
+									"key": "name",
+									"value": "KmlTest",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/project/upload",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"project",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add media (file path)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "filePath",
+									"value": "c:/Users/Alex/Desktop/england-london-bridge.jpg",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/project/upload",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"project",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Rename project",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "geoMapper Demo",
+									"type": "text"
+								},
+								{
+									"key": "",
+									"value": "This is the London bridge",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/project/rename",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"project",
+								"rename"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search for image",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/project/search/germany-english-garden.jpg",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"project",
+								"search",
+								"germany-english-garden.jpg"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete media",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/project/delete/germany-english-garden.jpg",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"project",
+								"delete",
+								"germany-english-garden.jpg"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete all media",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/project/deleteAll",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"project",
+								"deleteAll"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List media",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/project/order",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"project",
+								"order"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Media",
+			"item": [
+				{
+					"name": "Modify Annotation",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://localhost:8080/media/annotate/england-london-bridge.jpg/This is the London bridge",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"media",
+								"annotate",
+								"england-london-bridge.jpg",
+								"This is the London bridge"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Rename Media",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/media/rename/germany-english-garden.jpg/german-garden.jpg",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"media",
+								"rename",
+								"germany-english-garden.jpg",
+								"german-garden.jpg"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Export/Load",
+			"item": [
+				{
+					"name": "Export KMZ",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "format",
+									"value": "KML",
+									"type": "text"
+								},
+								{
+									"key": "filePath",
+									"value": "C:/Users/Alex/Desktop",
+									"type": "text"
+								},
+								{
+									"key": "fileName",
+									"value": "KmlTest",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/export",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"export"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Export KML",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "format",
+									"value": "KMZ",
+									"type": "text"
+								},
+								{
+									"key": "filePath",
+									"value": "C:/Users/Alex/Desktop",
+									"type": "text"
+								},
+								{
+									"key": "fileName",
+									"value": "KmzTest",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/export",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"export"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save project",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "format",
+									"value": "PROJECT",
+									"type": "text"
+								},
+								{
+									"key": "filePath",
+									"value": "C:/Users/Alex/Desktop",
+									"type": "text"
+								},
+								{
+									"key": "fileName",
+									"value": "SaveProjectTest",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/export",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"export"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Load Project",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "filePath",
+									"value": "C:/Users/Alex/Desktop/ProjectTest.gmp",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/loadProject",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"loadProject"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
