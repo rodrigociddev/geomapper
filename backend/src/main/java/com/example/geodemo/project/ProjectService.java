@@ -81,6 +81,7 @@ public class ProjectService {
 
         if(Files.exists(mediaPath) && !Files.isDirectory(mediaPath)){
             try{
+                System.out.println("Media Added: ");
                 System.out.println("File at : " + filePath);
                 System.out.println("Filename: " + mediaPath.getFileName());
                 System.out.println("Size: " + Files.size(mediaPath) + " bytes");
@@ -131,8 +132,8 @@ public class ProjectService {
 
     public String renameProject(String name){
         project.setName(name);
-        System.out.println("Project name has been successfully named to" + project.getName());
-        return "Project name has been successfully named to" + project.getName();
+        System.out.println("Project name has been successfully named to " + project.getName());
+        return "Project name has been successfully named to " + project.getName();
     }
 
 
