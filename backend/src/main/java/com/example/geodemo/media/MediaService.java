@@ -43,4 +43,6 @@ public class MediaService {
 
         return "Media cannot be annotated";
     }
-    }
+
+    //change long and lat
+}

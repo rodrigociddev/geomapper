@@ -32,6 +32,8 @@ public class ProjectController {
     public String addMedia(@RequestParam String filePath){
         return projectService.addFile(filePath);
     }
+
+
     @GetMapping("/search/{name}")
     public Media searchMedia(@PathVariable String name) {
         return projectService.searchMedia(name);
