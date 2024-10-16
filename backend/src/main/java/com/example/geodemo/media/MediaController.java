@@ -27,5 +27,15 @@ public class MediaController {
     public String addAnnotations(@PathVariable String mediaName, @PathVariable String annotation) {
         return mediaService.addAnnotations(mediaName, annotation);
     }
+
+    @PutMapping("/annotate/{mediaName}/{longitude}")
+    public String addLong(@PathVariable String mediaName, @PathVariable double longitude) {
+        return mediaService.addLong(mediaName, longitude);
+    }
+
+    @PutMapping("/annotate/{mediaName}/{langitude}")
+    public String addLat(@PathVariable String mediaName, @PathVariable double latitude) {
+        return mediaService.addLat(mediaName, latitude);
+    }
 }
 

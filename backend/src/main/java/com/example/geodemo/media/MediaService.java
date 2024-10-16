@@ -18,6 +18,7 @@ public class MediaService {
     public MediaService(ProjectService projectService){
         this.projectService = projectService;
     }
+
     public String renameMedia(String oldName, String newName){
         Media media = projectService.searchMedia(oldName);
 
@@ -44,5 +45,29 @@ public class MediaService {
         return "Media cannot be annotated";
     }
 
-    //change long and lat
+    public String addLong(String mediaName,double longitude){
+        Media media = projectService.searchMedia(mediaName);
+
+        if(media != null){
+            project.deleteMedia(media);
+            media.setLongitude(longitude);
+            project.addMedia(media);
+            return "Media succesfully changed longitude";
+        }
+
+        return "Cannot change Longitude";
+    }
+
+    public String addLat(String mediaName,double latitude){
+        Media media = projectService.searchMedia(mediaName);
+
+        if(media != null){
+            project.deleteMedia(media);
+            media.setLatitude(latitude);
+            project.addMedia(media);
+            return "Media succesfully changed latitude";
+        }
+
+        return "Cannot change Latitude";
+    }
 }
