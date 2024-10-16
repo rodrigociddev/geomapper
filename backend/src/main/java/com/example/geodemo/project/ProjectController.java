@@ -56,7 +56,7 @@ public class ProjectController {
 
     //prints by most recently modified
     @GetMapping("/order")
-    public void printMediaList() {
-        projectService.mediaOrder();
+    public String printMediaList() {
+        return projectService.mediaOrder();
     }
 }

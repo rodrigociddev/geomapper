@@ -94,16 +94,24 @@ public class ProjectService {
     }
 
 
-    // ordered by most recently added/modified
-    public void mediaOrder() {
-        System.out.println("Media List:");
+    // ordered by most recently added/modified, returns a list of all media
+    public String mediaOrder() {
+        StringBuilder mediaList = new StringBuilder();
+        mediaList.append("Media List:\n");
         int order = 0;
+
         for (int i = project.getProjectList().size() - 1; i >= 0; i--) {
             Media media = project.getProjectList().get(i);
-            order +=1;
-            System.out.println( order + ". Media Name: " + media.getName());
+            order += 1;
+            mediaList.append(order)
+                    .append(". Media Name: ")
+                    .append(media.getName())
+                    .append("\n");
         }
+
+        return mediaList.toString();
     }
+
 
     //searches the media in a project, returns media object w features of the media
     public Media searchMedia(String name) {
@@ -121,7 +129,7 @@ public class ProjectService {
         }
     }
 
-    //try catch
+    //deletes media given an input of an existing media name
     public String deleteMedia(String name){
         Media media = searchMedia(name);
         String mediaName = media.getName();
@@ -134,6 +142,7 @@ public class ProjectService {
         }
     }
 
+    //simply deletes all media in a project file
     public String deleteAllMedia(){
         if (project.checkEmpty()){
             System.out.println();
