@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native'; // Import navigation h
 import TopBar from './TopBar';
 import GeoMapperTitle from './GeoMapperTitle';
 import Button from './Button';
+import MediaList from './MediaList';
 
 const LandingPage = () => {
   const navigation = useNavigation(); // Get navigation instance

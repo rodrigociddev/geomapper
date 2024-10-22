@@ -1,16 +1,30 @@
 // MainAppPage.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import TopBarGeoTagR from './TopBarGeoTagR'; // Top bar for GeoTagR
-import SidePanel from './SidePanel'; // Side panel component
-console.log(TopBarGeoTagR); // Should not be undefined
-console.log(SidePanel); // Should not be undefined
+import TopBarGeoTagR from './TopBarGeoTagR';
+import SidePanel from './SidePanel';
+
+interface ImageData {
+  uri: string;
+  name: string;
+}
+
 const MainAppPage = () => {
+  const [images, setImages] = useState<ImageData[]>([]); // State to hold added images
+
+  const handleAddImage = (image: ImageData) => {
+    setImages((prevImages) => [...prevImages, image]); // Add new image to the list
+  };
+
+  const handleSelectImage = (image: ImageData) => {
+    console.log('Selected Image:', image); // Log selected image (for now)
+  };
+
   return (
     <View style={styles.container}>
       <TopBarGeoTagR />
       <View style={styles.body}>
-        <SidePanel />
+        <SidePanel images={images} onAddImage={handleAddImage} onSelectImage={handleSelectImage} />
       </View>
     </View>
   );
