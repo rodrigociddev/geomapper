@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 
 const TopBarGeoTagR = () => {
   const [fileDropdownVisible, setFileDropdownVisible] = useState(false);
   const [editDropdownVisible, setEditDropdownVisible] = useState(false);
   const [exportDropdownVisible, setExportDropdownVisible] = useState(false);
+  const navigation = useNavigation(); // Access navigation object
 
   const toggleFileDropdown = () => {
     setFileDropdownVisible(!fileDropdownVisible);
@@ -15,7 +17,7 @@ const TopBarGeoTagR = () => {
     setEditDropdownVisible(!editDropdownVisible);
     setFileDropdownVisible(false);
     setExportDropdownVisible(false);
-  }
+  };
   const toggleExportDropdown = () => {
     setExportDropdownVisible(!exportDropdownVisible);
     setFileDropdownVisible(false);
@@ -25,7 +27,7 @@ const TopBarGeoTagR = () => {
   return (
     <View style={styles.topBar}>
       <View style={styles.leftContainer}>
-        <Text style={styles.titleText}>GeoTagR</Text>
+        <Text style={styles.titleText} onPress={() => navigation.goBack()}>GeoTagR</Text>
       </View>
 
       <View style={styles.rightContainer}>
@@ -70,7 +72,6 @@ const TopBarGeoTagR = () => {
           )}
         </View>
 
-
         <View>
           <TouchableOpacity style={styles.menuButton} onPress={toggleExportDropdown}>
             <Text style={styles.menuText}>Export</Text>
@@ -105,6 +106,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  backButton: {
+    marginRight: 15, // Adds space between back button and title
+  },
+  backButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
   titleText: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -114,8 +122,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  menuButton: {
-  },
+  menuButton: {},
   menuText: {
     width: 100,
     height: 60,
