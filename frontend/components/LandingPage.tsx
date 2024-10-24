@@ -16,7 +16,6 @@ const LandingPage = () => {
         source={require('../assets/Globe.png')}
         style={styles.globe}
       >
-        <TopBar />
         <View style={styles.logoContainer}>
           <ImageBackground
             source={require('../assets/FIU.png')}

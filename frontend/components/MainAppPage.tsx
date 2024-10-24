@@ -41,6 +41,7 @@ const MainAppPage = () => {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: '#000000',
     flex: 1,
   },
   body: {

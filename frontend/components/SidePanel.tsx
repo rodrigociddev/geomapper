@@ -49,11 +49,9 @@ const SidePanel: React.FC<SidePanelProps> = ({ images, onAddImage, onSelectImage
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: '#070C20',
     width: 308,
     height: '100%',
-    borderWidth: 3,
-    borderColor: '#797979',
-    backgroundColor: '#ffffff',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 10,
