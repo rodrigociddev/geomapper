@@ -1,3 +1,4 @@
+/*
 package com.example.geodemo;
 
 import com.example.geodemo.export.ExportController;
@@ -8,7 +9,9 @@ import com.example.geodemo.project.ProjectController;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-/** Runs code after application start */
+*/
+/** Runs code after application start *//*
+
 @Component
 public class AppTester implements CommandLineRunner {
 
@@ -22,13 +25,16 @@ public class AppTester implements CommandLineRunner {
         this.exportController = exportController;
     }
 
-    /**
+    */
+/**
      * Put test code in this method
-     */
+     *//*
+
     @Override
     public void run(String... args) throws Exception {
         //add media to the project
-        //absolute path to sample media in project folder/sample-media
+        //replace filePath
+        //sample geotagged media in {project folder}/sample-media
         projectController.addMedia("C:\\Users\\Alex\\IdeaProjects\\geomapper\\sample-media\\england-london-bridge.jpg");
         projectController.addMedia("C:\\Users\\Alex\\IdeaProjects\\geomapper\\sample-media\\germany-english-garden.jpg");
 
@@ -63,3 +69,4 @@ public class AppTester implements CommandLineRunner {
 
     }
 }
+*/

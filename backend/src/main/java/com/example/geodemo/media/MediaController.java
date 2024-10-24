@@ -18,23 +18,23 @@ public class MediaController {
         this.mediaService = mediaService;
     }
 
-    @PutMapping("/rename/{oldName}/{newName}")
-    public String renameMedia(@PathVariable String oldName, @PathVariable String newName) {
+    @PatchMapping("/rename/{oldName}")
+    public String renameMedia(@PathVariable String oldName, @RequestParam String newName) {
         return mediaService.renameMedia(oldName, newName);
     }
 
-    @PutMapping("/annotate/{mediaName}/{annotation}")
-    public String addAnnotations(@PathVariable String mediaName, @PathVariable String annotation) {
+    @PatchMapping("/annotate/{mediaName}")
+    public String addAnnotations(@PathVariable String mediaName, @RequestBody String annotation) {
         return mediaService.addAnnotations(mediaName, annotation);
     }
 
-    @PutMapping("/annotate/{mediaName}/{longitude}")
-    public String addLong(@PathVariable String mediaName, @PathVariable double longitude) {
+    @PatchMapping("/longitude/{mediaName}")
+    public String addLong(@PathVariable String mediaName, @RequestBody double longitude) {
         return mediaService.addLong(mediaName, longitude);
     }
 
-    @PutMapping("/annotate/{mediaName}/{langitude}")
-    public String addLat(@PathVariable String mediaName, @PathVariable double latitude) {
+    @PatchMapping("/latitude/{mediaName}")
+    public String addLat(@PathVariable String mediaName, @RequestBody double latitude) {
         return mediaService.addLat(mediaName, latitude);
     }
 }

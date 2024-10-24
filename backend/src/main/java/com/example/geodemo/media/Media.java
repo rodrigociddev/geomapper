@@ -1,13 +1,18 @@
 package com.example.geodemo.media;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 /**
  * Represents Media added by the user
  */
 public class Media {
     private String filePath;
-    private String name;
-    private String annotations;
 
+    @NotNull
+    private String name;
+
+    private String annotations;
     private double longitude;
     private double latitude;
 

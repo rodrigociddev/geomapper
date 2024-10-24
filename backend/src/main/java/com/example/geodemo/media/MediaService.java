@@ -1,5 +1,7 @@
 package com.example.geodemo.media;
 
+import com.example.geodemo.exceptions.exception.MediaAlreadyExistsException;
+import com.example.geodemo.exceptions.exception.MediaNotFoundException;
 import com.example.geodemo.project.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,15 +23,23 @@ public class MediaService {
 
     public String renameMedia(String oldName, String newName){
         Media media = projectService.searchMedia(oldName);
+        if(projectService.searchMedia(newName)!= null){
+            System.out.println("Media already exists exception");
+            throw new MediaAlreadyExistsException(newName);
+        }
+        if(media == null){
+            System.out.println("Media named " + oldName + " does not exist");
+            throw new MediaNotFoundException(oldName);
 
-        if(media != null){
-            project.deleteMedia(media);
-            media.setName(newName);
-            project.addMedia(media);
-            return "Media name succesfully changed";
         }
 
-        return "Media name cannot be changed";
+        project.deleteMedia(media);
+        media.setName(newName);
+        project.addMedia(media);
+        System.out.println("Changed " + oldName + " Into " + newName);
+        return "Media name succesfully changed";
+
+
     }
 
     public String addAnnotations(String mediaName,String annotation){
@@ -39,10 +49,11 @@ public class MediaService {
             project.deleteMedia(media);
             media.setAnnotations(annotation);
             project.addMedia(media);
+            System.out.println("Media succesfully annotated");
             return "Media succesfully annotated";
         }
+        throw new MediaNotFoundException(mediaName);
 
-        return "Media cannot be annotated";
     }
 
     public String addLong(String mediaName,double longitude){
@@ -52,10 +63,11 @@ public class MediaService {
             project.deleteMedia(media);
             media.setLongitude(longitude);
             project.addMedia(media);
+            System.out.println("Media succesfully changed longitude");
             return "Media succesfully changed longitude";
         }
 
-        return "Cannot change Longitude";
+        throw new MediaNotFoundException(mediaName);
     }
 
     public String addLat(String mediaName,double latitude){
@@ -65,9 +77,10 @@ public class MediaService {
             project.deleteMedia(media);
             media.setLatitude(latitude);
             project.addMedia(media);
+            System.out.println("Media succesfully changed latitude");
             return "Media succesfully changed latitude";
         }
 
-        return "Cannot change Latitude";
+        throw new MediaNotFoundException(mediaName);
     }
 }

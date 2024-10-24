@@ -16,8 +16,8 @@ import java.io.IOException;
  */
 @Component("ProjectExporter")
 public class ProjectExporter implements Exporter {
-    KmlBuilder kmlBuilder;
-    KmzExporter kmzExporter;
+    private KmlBuilder kmlBuilder;
+    private KmzExporter kmzExporter;
 
     @Autowired
     public ProjectExporter(KmzExporter kmzExporter, KmlBuilder kmlBuilder){

@@ -11,8 +11,8 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class KmlDom {
 
-    public Document kmlDoc;
-    public Element docElement;
+    private Document kmlDoc;
+    private Element docElement;
 
 
     public KmlDom(String projectName) throws ParserConfigurationException{

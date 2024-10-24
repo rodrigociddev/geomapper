@@ -14,8 +14,8 @@ import java.util.List;
 @Component
 public class KmlBuilder {
 
-    Document kmlDom;
-    Project project;
+    private Document kmlDom;
+    private Project project;
 
 
     public KmlBuilder(Project project) {

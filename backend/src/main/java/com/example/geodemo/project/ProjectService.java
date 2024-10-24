@@ -1,15 +1,21 @@
 package com.example.geodemo.project;
 
+import com.example.geodemo.exceptions.exception.MediaAlreadyExistsException;
+import com.example.geodemo.exceptions.exception.MediaNotFoundException;
 import com.example.geodemo.media.Media;
 
 import com.example.geodemo.metaDataExtractor.Extractor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.file.*;
+import java.security.InvalidParameterException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -24,39 +30,41 @@ public class ProjectService {
     }
 
     //uploads file to project instance
-    public String uploadFile(MultipartFile file) {
-        if (file != null) {
-            try (InputStream inputStream = file.getInputStream()) {
-                boolean isMulti = true;
-                return processMedia(inputStream, file.getOriginalFilename(), file.getSize(), file.getContentType(), isMulti, file);
-            } catch (Exception e) {
-                return "Error processing the file: " + e.getMessage();
-            }
-        } else {
-            return "No file uploaded";
+    public Media uploadFile(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("Uploaded file is empty");
+        }
+
+        try (InputStream inputStream = file.getInputStream()) {
+            boolean isMulti = true;
+            return processMedia(inputStream, file.getOriginalFilename(), file.getSize(), file.getContentType(), isMulti, file);
+        } catch (IOException e) {
+            System.out.println("error processing file");
+            throw new IllegalArgumentException("Error processing file");
         }
     }
 
-    public String addFile(String filePath) {
+    public Media addFile(String filePath) {
         Path mediaPath = Paths.get(filePath);
-        if (Files.exists(mediaPath) && !Files.isDirectory(mediaPath)) {
-            try {
+        if (!Files.exists(mediaPath)|| Files.isDirectory(mediaPath)) {
+           throw new IllegalArgumentException("Invalid path");
+        }
+            try{
                 long fileSize = Files.size(mediaPath);
                 String contentType = Files.probeContentType(mediaPath);
-                try (InputStream inputStream = Files.newInputStream(mediaPath)) {
-                    boolean isMulti = false;
-                    return processMedia(inputStream, mediaPath.getFileName().toString(), fileSize, contentType, isMulti, filePath);
-                }
-            } catch (Exception e) {
-                return "Error processing file: " + e.getMessage();
+                InputStream inputStream = Files.newInputStream(mediaPath);
+                boolean isMulti = false;
+                return processMedia(inputStream, mediaPath.getFileName().toString(), fileSize, contentType, isMulti, filePath);
+            }catch(IOException ex){
+                throw new IllegalArgumentException("IOexception", ex);
             }
-        } else {
-            return "No valid file at: " + filePath;
-        }
+
+
+
     }
 
     //helper method to extract data from file and process it
-    private String processMedia(InputStream inputStream, String fileName, long size, String contentType, boolean isMultipart, Object fileSource) throws IOException {
+    private Media processMedia(InputStream inputStream, String fileName, long size, String contentType, boolean isMultipart, Object fileSource) throws IOException {
 
         System.out.println("Received file:");
         System.out.println("Filename: " + fileName);
@@ -67,7 +75,8 @@ public class ProjectService {
         Media media = extractor.extractMetadata(inputStream, fileName);
         if (media != null) {
             if (project.containsMedia(media.getName())) {
-                return "Media named: " + media.getName() + " is already part of the project";
+                System.out.println("Media named " + media.getName() + " Already exists");
+                throw new MediaAlreadyExistsException(media.getName());
             } else {
                 project.addMedia(media);
 
@@ -77,17 +86,19 @@ public class ProjectService {
                 } else if (fileSource instanceof String) {
                     saveMedia((String) fileSource);
                 }
-
-                return "File processed successfully, added to project";
+                System.out.println("File processed successfully, added to project");
+                return media;
             }
         } else {
-            return "No GPS data found in the file";
+            System.out.println("File has no GPS data");
+            throw new IllegalArgumentException("File has no GPS data");
         }
     }
 
 
 
     public String renameProject(String name){
+
         project.setName(name);
         System.out.println("Project name has been successfully named to " + project.getName());
         return "Project name has been successfully named to " + project.getName();
@@ -114,31 +125,28 @@ public class ProjectService {
 
 
     //searches the media in a project, returns media object w features of the media
+
     public Media searchMedia(String name) {
-        try {
+
             //Media media = globalLookUp.get(name);
             Media media = project.getMediaByName(name);
-            if (media == null) {
-                System.out.println("Media named: " + name + " does not exist");
-            }
-            System.out.println("Found " + media.getName());
             return media;
-        } catch (Exception e) {
-            System.out.println("Error searching for media: " + e.getMessage());
-            return null;
-        }
+
+
     }
 
     //deletes media given an input of an existing media name
-    public String deleteMedia(String name){
+
+    public void deleteMedia(String name){
         Media media = searchMedia(name);
         String mediaName = media.getName();
         if (media != null ) {
             project.deleteMedia(media);
             System.out.println(mediaName+ " deleted sucessfully");
-            return "Media deleted successfully.";
+
         } else {
-            return "Media not found";
+            System.out.println("medianotfoundexception");
+            throw new MediaNotFoundException(name);
         }
     }
 
@@ -182,5 +190,8 @@ public class ProjectService {
             System.out.println("Save media exception: " + e.toString());
         }
 
+    }
+    public List<Media> allMedia(){
+        return project.getMediaList();
     }
 }

@@ -17,7 +17,7 @@ import java.io.File;
 @Component("KmlExporter")
 public class KmlExporter implements Exporter {
 
-    KmlBuilder kmlBuilder;
+    private KmlBuilder kmlBuilder;
 
     public KmlExporter(KmlBuilder kmlBuilder){
         this.kmlBuilder = kmlBuilder;

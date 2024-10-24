@@ -24,7 +24,7 @@ public class Project {
     private List<Media> mediaList;
 
     //hashMap of the same media objects for fast lookup
-    static public HashMap<String, Media> mediaLookUp;
+    static private HashMap<String, Media> mediaLookUp;
 
     public Project() {
         mediaList = new ArrayList<>();
@@ -94,5 +94,8 @@ public class Project {
 
     public void setName(String name) {
         this.name = name;
+    }
+    public List<Media> getMediaList(){
+        return mediaList;
     }
 }
