@@ -24,7 +24,7 @@ public class MediaController {
     }
 
     @PatchMapping("/annotate/{mediaName}")
-    public String addAnnotations(@PathVariable String mediaName, @RequestBody String annotation) {
+    public String addAnnotations(@PathVariable String mediaName, @RequestParam String annotation) {
         return mediaService.addAnnotations(mediaName, annotation);
     }
 
