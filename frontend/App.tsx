@@ -11,7 +11,6 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Landing">
-        {/* Landing Page */}
         <Stack.Screen 
           name="Landing" 
           component={LandingPage} 
@@ -21,7 +20,7 @@ const App = () => {
         <Stack.Screen 
           name="MainApp" 
           component={MainAppPage} 
-          options={{ title: 'Main App' }} // Title of the new page
+          options={{ title: 'Main App', headerShown: false }} // Title of the new page
         />
       </Stack.Navigator>
     </NavigationContainer>
