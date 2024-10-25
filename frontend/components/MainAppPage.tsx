@@ -7,6 +7,10 @@ import ImageEditor from './ImageEditor';
 interface ImageData {
   uri: string;
   name: string;
+  title?: string;
+  latitude?: string;
+  longitude?: string;
+  annotation?: string;
 }
 
 const MainAppPage = () => {
@@ -15,13 +19,20 @@ const MainAppPage = () => {
   const [selectedImages, setSelectedImages] = useState<{ [key: string]: boolean }>({});
 
   const handleAddImage = (image: ImageData) => {
-    console.log('Adding image:', image);
     setImages((prevImages) => [...prevImages, image]);
   };
 
   const handleSelectImage = (image: ImageData) => {
-    console.log('Selected image for editing:', image);
     setSelectedImage(image);
+  };
+
+  // Handles updating the fields in the selected image (title, latitude, longitude, annotation)
+  const handleInputChange = (field: keyof ImageData, value: string) => {
+    if (selectedImage) {
+      const updatedImage = { ...selectedImage, [field]: value };
+      setSelectedImage(updatedImage);
+      setImages(images.map(img => (img.uri === selectedImage.uri ? updatedImage : img)));
+    }
   };
 
   const handleSelectAll = () => {
@@ -29,7 +40,6 @@ const MainAppPage = () => {
       acc[index] = true;
       return acc;
     }, {} as { [key: string]: boolean });
-    console.log('Selecting all images:', allSelected);
     setSelectedImages(allSelected);
   };
 
@@ -38,22 +48,16 @@ const MainAppPage = () => {
       acc[index] = false;
       return acc;
     }, {} as { [key: string]: boolean });
-    console.log('Deselecting all images:', noneSelected);
     setSelectedImages(noneSelected);
   };
 
   const handleDeleteSelected = () => {
-    console.log('Selected images for deletion:', selectedImages);
-
     const updatedImages = images.filter((image, index) => !selectedImages[index]);
-    
-    // If the current selected image is being deleted, clear it
+
     if (selectedImage && selectedImages[images.indexOf(selectedImage)]) {
-      console.log('The selected image is being deleted, resetting selectedImage.');
       setSelectedImage(null);
     }
 
-    console.log('Updated image list after deletion:', updatedImages);
     setImages(updatedImages);
     setSelectedImages({});
   };
@@ -75,7 +79,13 @@ const MainAppPage = () => {
         />
         <View style={styles.mainContent}>
           {selectedImage ? (
-            <ImageEditor image={selectedImage} />
+            <ImageEditor
+              image={selectedImage}
+              onTitleChange={(value) => handleInputChange('title', value)}
+              onLatitudeChange={(value) => handleInputChange('latitude', value)}
+              onLongitudeChange={(value) => handleInputChange('longitude', value)}
+              onAnnotationChange={(value) => handleInputChange('annotation', value)}
+            />
           ) : (
             <Text style={styles.placeholderText}>Select an image to edit</Text>
           )}
