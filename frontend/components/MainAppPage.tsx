@@ -1,6 +1,5 @@
-// MainAppPage.tsx
 import React, { useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native'; // Added Text import
+import { View, StyleSheet, Text } from 'react-native';
 import TopBarGeoTagR from './TopBarGeoTagR';
 import SidePanel from './SidePanel';
 import ImageEditor from './ImageEditor';
@@ -11,22 +10,69 @@ interface ImageData {
 }
 
 const MainAppPage = () => {
-  const [images, setImages] = useState<ImageData[]>([]); // State to hold added images
-  const [selectedImage, setSelectedImage] = useState<ImageData | null>(null); // State for selected image
+  const [images, setImages] = useState<ImageData[]>([]);
+  const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
+  const [selectedImages, setSelectedImages] = useState<{ [key: string]: boolean }>({});
 
   const handleAddImage = (image: ImageData) => {
-    setImages((prevImages) => [...prevImages, image]); // Add new image to the list
+    console.log('Adding image:', image);
+    setImages((prevImages) => [...prevImages, image]);
   };
 
   const handleSelectImage = (image: ImageData) => {
-    setSelectedImage(image); // Set selected image for editing
+    console.log('Selected image for editing:', image);
+    setSelectedImage(image);
+  };
+
+  const handleSelectAll = () => {
+    const allSelected = images.reduce((acc, image, index) => {
+      acc[index] = true;
+      return acc;
+    }, {} as { [key: string]: boolean });
+    console.log('Selecting all images:', allSelected);
+    setSelectedImages(allSelected);
+  };
+
+  const handleDeselectAll = () => {
+    const noneSelected = images.reduce((acc, image, index) => {
+      acc[index] = false;
+      return acc;
+    }, {} as { [key: string]: boolean });
+    console.log('Deselecting all images:', noneSelected);
+    setSelectedImages(noneSelected);
+  };
+
+  const handleDeleteSelected = () => {
+    console.log('Selected images for deletion:', selectedImages);
+
+    const updatedImages = images.filter((image, index) => !selectedImages[index]);
+    
+    // If the current selected image is being deleted, clear it
+    if (selectedImage && selectedImages[images.indexOf(selectedImage)]) {
+      console.log('The selected image is being deleted, resetting selectedImage.');
+      setSelectedImage(null);
+    }
+
+    console.log('Updated image list after deletion:', updatedImages);
+    setImages(updatedImages);
+    setSelectedImages({});
   };
 
   return (
     <View style={styles.container}>
-      <TopBarGeoTagR />
+      <TopBarGeoTagR 
+        onSelectAll={handleSelectAll} 
+        onDeselectAll={handleDeselectAll} 
+        onDeleteSelected={handleDeleteSelected}
+      />
       <View style={styles.body}>
-        <SidePanel images={images} onAddImage={handleAddImage} onSelectImage={handleSelectImage} />
+        <SidePanel
+          images={images}
+          selectedImages={selectedImages}
+          onAddImage={handleAddImage}
+          onSelectImage={handleSelectImage}
+          setSelectedImages={setSelectedImages}
+        />
         <View style={styles.mainContent}>
           {selectedImage ? (
             <ImageEditor image={selectedImage} />

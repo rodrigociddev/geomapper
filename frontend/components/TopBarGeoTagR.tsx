@@ -1,33 +1,70 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation
+import axios from 'axios';
 
-const TopBarGeoTagR = () => {
+interface TopBarGeoTagRProps {
+  onSelectAll: () => void;
+  onDeselectAll: () => void;
+  onDeleteSelected: () => void;
+}
+
+const TopBarGeoTagR: React.FC<TopBarGeoTagRProps> = ({ onSelectAll, onDeselectAll, onDeleteSelected }) => {
   const [fileDropdownVisible, setFileDropdownVisible] = useState(false);
   const [editDropdownVisible, setEditDropdownVisible] = useState(false);
   const [exportDropdownVisible, setExportDropdownVisible] = useState(false);
-  const navigation = useNavigation(); // Access navigation object
 
   const toggleFileDropdown = () => {
     setFileDropdownVisible(!fileDropdownVisible);
     setExportDropdownVisible(false);
     setEditDropdownVisible(false);
   };
+
   const toggleEditDropdown = () => {
     setEditDropdownVisible(!editDropdownVisible);
     setFileDropdownVisible(false);
     setExportDropdownVisible(false);
   };
+
   const toggleExportDropdown = () => {
     setExportDropdownVisible(!exportDropdownVisible);
     setFileDropdownVisible(false);
     setEditDropdownVisible(false);
   };
 
+  // Axios request to export KML
+const exportKML = async () => {
+  try {
+    const response = await axios.post('http://localhost:8080/export', null, {
+      params: {
+        format: 'KML', // Send as a string, backend will handle conversion
+        fileName: 'exported_file', 
+      },
+    });
+    console.log('KML exported successfully:', response.data);
+  } catch (error) {
+    console.error('Error exporting KML:', error);
+  }
+};
+
+// Axios request to export KMZ
+const exportKMZ = async () => {
+  try {
+    const response = await axios.post('http://localhost:8080/export', null, {
+      params: {
+        format: 'KMZ', // Send as a string, backend will handle conversion
+        fileName: 'exported_file', 
+      },
+    });
+    console.log('KMZ exported successfully:', response.data);
+  } catch (error) {
+    console.error('Error exporting KMZ:', error);
+  }
+};
+
   return (
     <View style={styles.topBar}>
       <View style={styles.leftContainer}>
-        <Text style={styles.titleText} onPress={() => navigation.goBack()}>GeoTagR</Text>
+        <Text style={styles.titleText}>GeoTagR</Text>
       </View>
 
       <View style={styles.rightContainer}>
@@ -37,16 +74,16 @@ const TopBarGeoTagR = () => {
           </TouchableOpacity>
           {fileDropdownVisible && (
             <View style={styles.dropdownMenu}>
-              <TouchableOpacity onPress={() => console.log('Add Media pressed')}>
+              <TouchableOpacity>
                 <Text style={styles.dropdownItem}>Add Media</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => console.log('Save Project pressed')}>
+              <TouchableOpacity>
                 <Text style={styles.dropdownItem}>Save Project</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => console.log('Open Project pressed')}>
+              <TouchableOpacity>
                 <Text style={styles.dropdownItem}>Open Project</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => console.log('New Project pressed')}>
+              <TouchableOpacity>
                 <Text style={styles.dropdownItem}>New Project</Text>
               </TouchableOpacity>
             </View>
@@ -59,13 +96,13 @@ const TopBarGeoTagR = () => {
           </TouchableOpacity>
           {editDropdownVisible && (
             <View style={styles.dropdownMenu}>
-              <TouchableOpacity onPress={() => console.log('Select All pressed')}>
+              <TouchableOpacity onPress={onSelectAll}>
                 <Text style={styles.dropdownItem}>Select All</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => console.log('Unselect All pressed')}>
+              <TouchableOpacity onPress={onDeselectAll}>
                 <Text style={styles.dropdownItem}>Unselect All</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => console.log('Delete Selected pressed')}>
+              <TouchableOpacity onPress={onDeleteSelected}>
                 <Text style={styles.dropdownItem}>Delete Selected</Text>
               </TouchableOpacity>
             </View>
@@ -78,10 +115,10 @@ const TopBarGeoTagR = () => {
           </TouchableOpacity>
           {exportDropdownVisible && (
             <View style={styles.dropdownMenu}>
-              <TouchableOpacity onPress={() => console.log('Export as KML pressed')}>
+              <TouchableOpacity onPress={exportKML}>
                 <Text style={styles.dropdownItem}>Export as KML</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => console.log('Export as KMZ pressed')}>
+              <TouchableOpacity onPress={exportKMZ}>
                 <Text style={styles.dropdownItem}>Export as KMZ</Text>
               </TouchableOpacity>
             </View>
@@ -101,17 +138,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 10,
+    zIndex: 1,
   },
   leftContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  backButton: {
-    marginRight: 15, // Adds space between back button and title
-  },
-  backButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
   },
   titleText: {
     fontSize: 24,
@@ -121,6 +152,8 @@ const styles = StyleSheet.create({
   rightContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    zIndex: 2,
+    overflow: 'visible',
   },
   menuButton: {},
   menuText: {
@@ -129,8 +162,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 15,
     paddingVertical: 15,
-    borderWidth: 1,
-    borderColor: '#505050',
   },
   dropdownMenu: {
     position: 'absolute',
@@ -138,12 +169,12 @@ const styles = StyleSheet.create({
     width: 100,
     right: 0,
     backgroundColor: '#FFFFFF',
-    elevation: 0,
-    zIndex: 150,
+    zIndex: 999,
+    elevation: 5,
   },
   dropdownItem: {
     padding: 10,
-    fontSize: 16,
+    fontSize: 12,
     color: '#000',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',

@@ -11,9 +11,11 @@
     "windows": "react-native run-windows"
   },
   "dependencies": {
+    "@react-native-community/checkbox": "^0.5.17",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/stack": "^6.4.1",
     "@types/react-native-vector-icons": "^6.4.18",
+    "axios": "^1.7.7",
     "react": "18.3.1",
     "react-native": "^0.75.3",
     "react-native-image-picker": "^7.1.2",
