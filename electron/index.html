@@ -9,18 +9,27 @@
 </head>
 <body>
   <div class="container-fluid">
-    <div class="row">
+    <div class="row vh-100">
       <!-- Sidebar -->
-      <div class="col-md-3 col-lg-2 bg-dark-blue vh-100 overflow-auto position-relative" id="sidebar">
+      <div class="col-md-3 col-lg-2 bg-dark-blue vh-100 d-flex flex-column" id="sidebar">
+        <!-- Header -->
         <div class="p-3">
           <h4 class="text-center text-light-blue">Media</h4>
-          <div id="media-list"></div>
         </div>
-        <button class="btn btn-primary add-media-button" id="add-media-button">Add Media</button>
+        <!-- Content -->
+        <div class="flex-grow-1 overflow-auto">
+          <div id="media-list">
+           
+          </div>
+        </div>
+        <!-- Button -->
+        <div class="p-3">
+          <button class="btn btn-primary add-media-button w-100" id="add-media-button">Add Media</button>
+        </div>
       </div>
 
       <!-- Main Content -->
-      <div class="col-md-9 col-lg-10 p-4">
+      <div class="col-md-9 col-lg-10 p-4 vh-100 overflow-auto">
         <div id="main-content">
           <p id="default-message" class="text-light-blue">Add media to get started.</p>
           <img id="selected-image" style="max-width: 100%; height: auto; display: none;" alt="Selected Media">
