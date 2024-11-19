@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import static com.example.geodemo.project.ProjectService.project;
 
+import java.io.File;
+
+
 /**
  * Methods for manipulating Media objects
  * Used by MediaController
