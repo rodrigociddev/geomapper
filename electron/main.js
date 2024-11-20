@@ -100,7 +100,7 @@ function addMedia() {
     })
     .then((result) => {
       if (!result.canceled) {
-        console.log('Media added:', result.filePaths[0]);
+        console.log('Media selected:', result.filePaths[0]);
         mainWindow.webContents.send('add-media', result.filePaths[0]); // Send file path to renderer process
       }
     })

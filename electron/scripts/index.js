@@ -18,33 +18,37 @@ function showMediaDetails() {
 
 // Centralized function to handle adding media
 function handleAddMedia(filePath) {
+
   const imageElement = document.getElementById('selected-image');
-  if (imageElement) {
-    // Update the selected image display
-    imageElement.src = `file://${filePath}`;
-    showMediaDetails(); // Show media details in the main section
 
-    // Create a new media object
-    const newMedia = {
-      id: mediaItems.length,
-      filePath: `file://${filePath}`,
-      title: `Media ${mediaItems.length + 1}`,
-      latitude: '',
-      longitude: '',
-      annotations: '',
-    };
+  window.requestsAPI.addMediaRequest(filePath)
+    .then(media => {
 
-    mediaItems.push(newMedia); // Add to media items array
-    renderMediaList(); // Re-render the sidebar
-  } else {
-    console.error('Image element not found in the DOM.');
-  }
-
-
-  //axios request to add the media to the backend
-  window.requestsAPI.addMediaRequest(filePath);
-
+      const { id, name, latitude, longitude, annotations } = media;
+      if (imageElement) {
+        // Update the selected image display
+        imageElement.src = `file://${filePath}`;
+        showMediaDetails(); // Show media details in the main section
+    
+        // Create a new media object
+        const newMedia = {
+          id: id,
+          filePath: `file://${filePath}`,
+          title: name,
+          latitude: latitude,
+          longitude: longitude,
+          annotations: annotations,
+        };
+    
+        mediaItems.push(newMedia); // Add to media items array
+        renderMediaList(); // Re-render the sidebar
+        selectMedia(id) // select newly added media
+      } else {
+        console.error('Image element not found in the DOM.');
+      }
+    })
 }
+
 
 // Listen for the 'add-media' event from the main process
 window.electronAPI.addMedia((event, filePath) => {
@@ -54,6 +58,7 @@ window.electronAPI.addMedia((event, filePath) => {
     console.error('No file path received from the main process.');
   }
 });
+
 
 // Handle the Add Media button click
 document.getElementById('add-media-button').addEventListener('click', () => {
@@ -70,7 +75,7 @@ function renderMediaList() {
   }
 
   mediaItems.forEach((media, index) => {
-    media.id = index; // Update media ID to match its new index
+    // media.id = index; // Update media ID to match its new index
 
     // Create a media block
     const mediaBlock = document.createElement('div');

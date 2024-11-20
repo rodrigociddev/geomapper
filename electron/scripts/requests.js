@@ -8,8 +8,7 @@ function addMediaRequest(filePath){
     const params = new URLSearchParams();
     params.append('filePath', filePath);
 
-    const mediaResponse = 
-    axios.post( `${baseUrl}/project/upload`,
+    return axios.post( `${baseUrl}/project/upload`,
         params,
         {
             headers:{'Content-Type': 'application/x-www-form-urlencoded'}
@@ -18,13 +17,14 @@ function addMediaRequest(filePath){
     .then((response)=>{
         media=response.data;
         console.log('Uploaded Media:', media);
+        return media;
     })
     .catch((error)=>{
         console.error('Error uploading media:', error.response?.data || error.message);
         throw error;
     })
 
-    return mediaResponse;
+    
 }
 module.exports={
     addMediaRequest
