@@ -1,5 +1,7 @@
 const { app, BrowserWindow, Menu, dialog, ipcMain } = require('electron');
 const path = require('path');
+const axios = require('axios');
+const fs = require('fs');
 
 let mainWindow;
 
@@ -24,6 +26,21 @@ app.on('ready', () => {
   // Listen for Add Media dialog event from renderer process
   ipcMain.on('open-add-media-dialog', () => {
     addMedia();
+  });
+
+  // Listen for save project event from renderer process
+  ipcMain.on('save-project', () => {
+    saveProject();
+  });
+
+  // Listen for open project event from renderer process
+  ipcMain.on('open-project', () => {
+    openProject();
+  });
+
+  // Listen for export event from renderer process
+  ipcMain.on('export', (event, format) => {
+    exportFile(format);
   });
 });
 
@@ -108,20 +125,58 @@ function addMedia() {
 }
 
 function saveProject() {
-  console.log('Save Project clicked');
-  // Logic to save the project
+  dialog
+    .showSaveDialog(mainWindow, {
+      title: 'Save Project',
+      defaultPath: path.join(app.getPath('documents'), 'project.gmp'),
+      filters: [{ name: 'Project Files', extensions: ['gmp'] }],
+    })
+    .then((result) => {
+      if (!result.canceled) {
+        const filePath = result.filePath;
+        const fileName = path.basename(filePath, path.extname(filePath)) + '.gmp';
+        console.log('Saving project to:', filePath);
+        axios.post('http://localhost:8080/export', null, {
+          params: {
+            format: 'PROJECT',
+            filePath: path.dirname(filePath),
+            fileName: fileName
+          }
+        })
+        .then(response => {
+          console.log('Project saved successfully:', response.data);
+          fs.writeFileSync(filePath, response.data);
+        })
+        .catch(error => {
+          console.error('Error saving project:', error.response?.data || error.message);
+        });
+      }
+    })
+    .catch((err) => console.error('Error saving project:', err));
 }
 
 function openProject() {
   dialog
     .showOpenDialog(mainWindow, {
       properties: ['openFile'],
-      filters: [{ name: 'Project Files', extensions: ['json', 'proj'] }],
+      filters: [{ name: 'Project Files', extensions: ['gmp'] }],
     })
     .then((result) => {
       if (!result.canceled) {
-        console.log('Project opened:', result.filePaths[0]);
-        mainWindow.webContents.send('open-project', result.filePaths[0]);
+        const filePath = result.filePaths[0];
+        console.log('Opening project from:', filePath);
+        axios.post('http://localhost:8080/loadProject', null, {
+          params: {
+            filePath: filePath
+          }
+        })
+        .then(response => {
+          console.log('Project loaded successfully:', response.data);
+          mainWindow.webContents.send('load-project', response.data);
+        })
+        .catch(error => {
+          console.error('Error loading project:', error.response?.data || error.message);
+        });
       }
     })
     .catch((err) => console.error('Error opening project:', err));
@@ -148,13 +203,100 @@ function deleteSelected() {
 }
 
 function exportKML() {
-  console.log('Export KML clicked');
-  mainWindow.webContents.send('export', { format: 'KML' });
+  dialog
+    .showSaveDialog(mainWindow, {
+      title: 'Export KML',
+      defaultPath: path.join(app.getPath('downloads'), 'export.kml'),
+      filters: [{ name: 'KML Files', extensions: ['kml'] }],
+    })
+    .then((result) => {
+      if (!result.canceled) {
+        const filePath = result.filePath;
+        const fileName = path.basename(filePath, path.extname(filePath)) + '.kml';
+        console.log('Exporting KML to:', filePath);
+        axios.post('http://localhost:8080/export', null, {
+          params: {
+            format: 'KML',
+            filePath: path.dirname(filePath),
+            fileName: fileName
+          }
+        })
+        .then(response => {
+          console.log('KML exported successfully:', response.data);
+          fs.writeFileSync(filePath, response.data);
+        })
+        .catch(error => {
+          console.error('Error exporting KML:', error.response?.data || error.message);
+        });
+      }
+    })
+    .catch((err) => console.error('Error exporting KML:', err));
 }
 
 function exportKMZ() {
-  console.log('Export KMZ clicked');
-  mainWindow.webContents.send('export', { format: 'KMZ' });
+  dialog
+    .showSaveDialog(mainWindow, {
+      title: 'Export KMZ',
+      defaultPath: path.join(app.getPath('downloads'), 'export.kmz'),
+      filters: [{ name: 'KMZ Files', extensions: ['kmz'] }],
+    })
+    .then((result) => {
+      if (!result.canceled) {
+        const filePath = result.filePath;
+        const fileName = path.basename(filePath, path.extname(filePath)) + '.kmz';
+        console.log('Exporting KMZ to:', filePath);
+        axios.post('http://localhost:8080/export', null, {
+          params: {
+            format: 'KMZ',
+            filePath: path.dirname(filePath),
+            fileName: fileName
+          }
+        })
+        .then(response => {
+          console.log('KMZ exported successfully:', response.data);
+          fs.writeFileSync(filePath, response.data);
+        })
+        .catch(error => {
+          console.error('Error exporting KMZ:', error.response?.data || error.message);
+        });
+      }
+    })
+    .catch((err) => console.error('Error exporting KMZ:', err));
+}
+
+function exportFile(format) {
+  dialog
+    .showSaveDialog(mainWindow, {
+      title: `Export ${format}`,
+      defaultPath: path.join(app.getPath('downloads'), `export.${format.toLowerCase()}`),
+      filters: [{ name: `${format} Files`, extensions: [format.toLowerCase()] }],
+    })
+    .then((result) => {
+      if (!result.canceled) {
+        const filePath = result.filePath;
+        const fileName = path.basename(filePath, path.extname(filePath)) + `.${format.toLowerCase()}`;
+        console.log(`Exporting ${format} to:`, filePath);
+        axios.post('http://localhost:8080/export', null, {
+          params: {
+            format: format,
+            filePath: path.dirname(filePath),
+            fileName: fileName
+          }
+        })
+        .then(response => {
+          console.log(`${format} exported successfully:`, response.data);
+          fs.writeFileSync(filePath, response.data);
+        })
+        .catch(error => {
+          if (error.response && error.response.data.includes('ExistsException')) {
+            console.error(`Error exporting ${format}: File already exists.`);
+          } else {
+            console.error(`Error exporting ${format}:`, error.response?.data || error.message);
+          }
+        });
+      }
+    })
+    .catch((err) => console.error(`Error exporting ${format}:`, err));
 }
 
 function showAboutDialog() {

@@ -1,4 +1,3 @@
-
 // Keep track of media items
 const mediaItems = [];
 
@@ -49,7 +48,6 @@ function handleAddMedia(filePath) {
     })
 }
 
-
 // Listen for the 'add-media' event from the main process
 window.electronAPI.addMedia((event, filePath) => {
   if (filePath) {
@@ -59,6 +57,14 @@ window.electronAPI.addMedia((event, filePath) => {
   }
 });
 
+// Listen for the 'load-project' event from the main process
+window.electronAPI.loadProject((event, projectData) => {
+  if (projectData) {
+    loadProjectData(projectData);
+  } else {
+    console.error('No project data received from the main process.');
+  }
+});
 
 // Handle the Add Media button click
 document.getElementById('add-media-button').addEventListener('click', () => {
@@ -127,6 +133,18 @@ function selectMedia(mediaId) {
     if (selectedBlock) {
       selectedBlock.classList.add('bg-primary', 'text-white');
     }
+  }
+}
+
+// Load project data and populate the media items
+function loadProjectData(projectData) {
+  mediaItems.length = 0; // Clear existing media items
+  projectData.forEach(media => {
+    mediaItems.push(media);
+  });
+  renderMediaList(); // Re-render the sidebar
+  if (mediaItems.length > 0) {
+    selectMedia(mediaItems[0].id); // Select the first media item
   }
 }
 
