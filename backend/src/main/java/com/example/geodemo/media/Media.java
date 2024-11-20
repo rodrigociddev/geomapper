@@ -7,8 +7,10 @@ import jakarta.validation.constraints.NotNull;
  * Represents Media added by the user
  */
 public class Media {
-    private String filePath;
 
+
+    private String filePath;
+    private String id;
     @NotNull
     private String name;
 
@@ -65,6 +67,13 @@ public class Media {
 
     public void setAnnotations(String annotations) {
         this.annotations = annotations;
+    }
+
+    public String getID(){
+        return this.id;
+    }
+    public void setID(String id){
+        this.id=id;
     }
 
     @Override

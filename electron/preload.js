@@ -1,4 +1,5 @@
 const { contextBridge, ipcRenderer } = require('electron');
+const requests = require('./scripts/requests.js');
 
 contextBridge.exposeInMainWorld('electronAPI', {
   openFileDialog: async () => {
@@ -9,4 +10,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   selectAll: (callback) => ipcRenderer.on('select-all', callback),
   unselectAll: (callback) => ipcRenderer.on('unselect-all', callback),
   deleteSelected: (callback) => ipcRenderer.on('delete-selected', callback),
-});
+})
+
+contextBridge.exposeInMainWorld('requestsAPI', requests);

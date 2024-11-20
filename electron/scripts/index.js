@@ -1,3 +1,4 @@
+
 // Keep track of media items
 const mediaItems = [];
 
@@ -38,6 +39,11 @@ function handleAddMedia(filePath) {
   } else {
     console.error('Image element not found in the DOM.');
   }
+
+
+  //axios request to add the media to the backend
+  window.requestsAPI.addMediaRequest(filePath);
+
 }
 
 // Listen for the 'add-media' event from the main process

@@ -1,10 +1,12 @@
 package com.example.geodemo.metaDataExtractor;
 
+
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.lang.GeoLocation;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.GpsDirectory;
 import com.example.geodemo.media.Media;
+import java.util.UUID;
 
 import java.io.InputStream;
 
@@ -38,7 +40,7 @@ public class Extractor {
             } else {
                 return null; // no GPS directory found
             }
-
+            media.setID(UUID.randomUUID().toString());
             return media;
         } catch (Exception e) {
             e.printStackTrace();
