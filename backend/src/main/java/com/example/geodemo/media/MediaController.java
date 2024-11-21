@@ -43,12 +43,12 @@ public class MediaController {
         return mediaService.addLat(id, latitude);
     }
 
-    @PatchMapping("/changeAll/{id}")
-    public ResponseEntity<Media> changeAll (@PathVariable String id, @RequestBody Media updated){
+    @PatchMapping("/updateMedia/{id}")
+    public ResponseEntity<Media> updateMedia(@PathVariable String id, @RequestBody Media update){
         try{
-            Media media = changeAll(id,updated).getBody();
+            mediaService.updateMedia(id,update);
 
-            return ResponseEntity.ok(media);
+            return ResponseEntity.noContent().build();
         }catch (IllegalArgumentException e){
             return ResponseEntity.notFound().build();
         }

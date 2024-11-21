@@ -102,7 +102,7 @@ public class MediaService {
         throw new MediaNotFoundException(id);
     }
 
-    public Media changeAll(String id, Media updates){
+    public void updateMedia(String id, Media updates){
         Media media = projectService.searchMedia(id);
         if (media == null) {
             throw new MediaNotFoundException(id);
@@ -112,21 +112,21 @@ public class MediaService {
         String newName = updates.getTitle();
 
         //defining the directory for user media files
-        String workingDir = System.getProperty("user.dir");
-        File oldFile = new File(workingDir + File.separator + "userMedia" + File.separator + oldName);
-        File newFile = new File(workingDir + File.separator + "userMedia" + File.separator + newName);
+//        String workingDir = System.getProperty("user.dir");
+//        File oldFile = new File(workingDir + File.separator + "userMedia" + File.separator + oldName);
+//        File newFile = new File(workingDir + File.separator + "userMedia" + File.separator + newName);
 
-        if (oldFile.exists()) {
-            boolean renamed = oldFile.renameTo(newFile);
-            if (!renamed) {
-                throw new RuntimeException("Failed to rename file on the filesystem.");
-            }
-        } else {
-            System.out.println("File not found in userMedia folder: " + oldName);
-            throw new MediaNotFoundException(oldName);
-        }
-
-        project.deleteMedia(media);
+//        if (oldFile.exists()) {
+//            boolean renamed = oldFile.renameTo(newFile);
+//            if (!renamed) {
+//                throw new RuntimeException("Failed to rename file on the filesystem.");
+//            }
+//        } else {
+//            System.out.println("File not found in userMedia folder: " + oldName);
+//            throw new MediaNotFoundException(oldName);
+//        }
+//
+//        project.deleteMedia(media);
 
         if (updates.getTitle() != null) {
             media.setTitle(updates.getTitle());
@@ -141,8 +141,8 @@ public class MediaService {
             media.setLongitude(updates.getLongitude());
         }
 
-        project.addMedia(media);
+//        project.addMedia(media);
 
-        return media;
+//        return media;
     }
 }
