@@ -23,17 +23,18 @@ function handleAddMedia(filePath) {
   window.requestsAPI.addMediaRequest(filePath)
     .then(media => {
 
-      const { id, name, latitude, longitude, annotations } = media;
+      const { uuid, title, latitude, longitude,userMediaPath, annotations } = media;
       if (imageElement) {
         // Update the selected image display
-        imageElement.src = `file://${filePath}`;
+        imageElement.src = `file://${userMediaPath}`;
         showMediaDetails(); // Show media details in the main section
     
         // Create a new media object
         const newMedia = {
-          id: id,
-          filePath: `file://${filePath}`,
-          title: name,
+          id: mediaItems.length,
+          uuid:uuid,
+          filePath: `file://${userMediaPath}`,
+          title: title,
           latitude: latitude,
           longitude: longitude,
           annotations: annotations,
@@ -41,7 +42,7 @@ function handleAddMedia(filePath) {
     
         mediaItems.push(newMedia); // Add to media items array
         renderMediaList(); // Re-render the sidebar
-        selectMedia(id) // select newly added media
+        selectMedia(mediaItems.length-1) // select newly added media
       } else {
         console.error('Image element not found in the DOM.');
       }
@@ -74,7 +75,7 @@ function renderMediaList() {
   }
 
   mediaItems.forEach((media, index) => {
-    // media.id = index; // Update media ID to match its new index
+    media.id = index; // Update media ID to match its new index
 
     // Create a media block
     const mediaBlock = document.createElement('div');
@@ -139,19 +140,27 @@ window.electronAPI.deleteSelected(() => {
   // Get all highlighted blocks
   const selectedBlocks = document.querySelectorAll('.media-block.bg-primary');
 
-  selectedBlocks.forEach((block) => {
-    const mediaId = parseInt(block.dataset.id, 10);
+  //array that will be passed to the delete request
+  const uuids=[];
 
+  selectedBlocks.forEach((block) => {
+    
+
+    const mediaId = parseInt(block.dataset.id, 10);
+    
     // Remove the block from the DOM
     block.remove();
 
     // Remove the media item from the array
     const mediaIndex = mediaItems.findIndex((media) => media.id === mediaId);
+    //add the uuid
+    uuids.push(mediaItems[mediaIndex].uuid);
+
     if (mediaIndex > -1) {
       mediaItems.splice(mediaIndex, 1);
     }
   });
-
+  window.requestsAPI.deleteMediaRequest(uuids);
   // Re-render the sidebar to update indices and data attributes
   renderMediaList();
 

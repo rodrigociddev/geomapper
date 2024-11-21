@@ -80,6 +80,13 @@ public class ProjectController {
         projectService.deleteMediaFinal(id);
     }
 
+    @DeleteMapping("/batch-delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void batchDelete(@RequestBody List<String> uuids){
+        for (String uuid:uuids){
+            projectService.deleteMediaFinal(uuid);
+        }
+    }
     @DeleteMapping("/deleteAll")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAllMedia() {

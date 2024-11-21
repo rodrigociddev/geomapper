@@ -31,7 +31,7 @@ public class KmlBuilder {
         for (Media media: mediaList) {
 
             System.out.println("latitude" + media.getLatitude());
-            kml.addPlaceMark(media.getName(), media.getAnnotations(), media.getLatitude(), media.getLongitude());
+            kml.addPlaceMark(media.getTitle(), media.getAnnotations(), media.getLatitude(), media.getLongitude());
         }
         return kml;
 
