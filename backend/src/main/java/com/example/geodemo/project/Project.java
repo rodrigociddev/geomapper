@@ -53,12 +53,12 @@ public class Project {
     // adding media to both the list(maintains order) and lookup
     public void addMedia(Media media) {
         mediaList.add(media);
-        mediaLookUp.put(media.getName(), media);
+        mediaLookUp.put(media.getID(), media);
     }
 
     public void deleteMedia(Media media) {
         mediaList.remove(media);
-        mediaLookUp.remove(media.getName(), media);
+        mediaLookUp.remove(media.getID(), media);
     }
 
     public void deleteAllMedia(){
@@ -79,13 +79,13 @@ public class Project {
     }
 
     //looking up by name through hashmap
-    public Media getMediaByName(String name) {
-        return mediaLookUp.get(name);
+    public Media getMediaByID(String id) {
+        return mediaLookUp.get(id);
     }
 
     //just to check
-    public boolean containsMedia(String name) {
-        return mediaLookUp.containsKey(name);
+    public boolean containsMedia(String id) {
+        return mediaLookUp.containsKey(id);
     }
 
     public String getName() {

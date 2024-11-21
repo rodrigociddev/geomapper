@@ -24,16 +24,18 @@ public class MediaService {
         this.projectService = projectService;
     }
 
-    public String renameMedia(String oldName, String newName) {
-        Media media = projectService.searchMedia(oldName);
+    public String renameMedia(String id, String newName) {
+        Media media = projectService.searchMedia(id);
         if (projectService.searchMedia(newName) != null) {
             System.out.println("Media already exists exception");
             throw new MediaAlreadyExistsException(newName);
         }
         if (media == null) {
-            System.out.println("Media named " + oldName + " does not exist");
-            throw new MediaNotFoundException(oldName);
+            System.out.println("Media with ID " + id + " does not exist");
+            throw new MediaNotFoundException(id);
         }
+
+        String oldName = media.getName();
 
         //defining the directory for user media files
         String workingDir = System.getProperty("user.dir");
@@ -58,8 +60,8 @@ public class MediaService {
         return "Media name successfully changed";
     }
 
-    public String addAnnotations(String mediaName,String annotation){
-        Media media = projectService.searchMedia(mediaName);
+    public String addAnnotations(String id,String annotation){
+        Media media = projectService.searchMedia(id);
 
         if(media != null){
             project.deleteMedia(media);
@@ -68,12 +70,12 @@ public class MediaService {
             System.out.println("Media succesfully annotated");
             return "Media succesfully annotated";
         }
-        throw new MediaNotFoundException(mediaName);
+        throw new MediaNotFoundException(id);
 
     }
 
-    public String addLong(String mediaName,double longitude){
-        Media media = projectService.searchMedia(mediaName);
+    public String addLong(String id,double longitude){
+        Media media = projectService.searchMedia(id);
 
         if(media != null){
             project.deleteMedia(media);
@@ -83,11 +85,11 @@ public class MediaService {
             return "Media succesfully changed longitude";
         }
 
-        throw new MediaNotFoundException(mediaName);
+        throw new MediaNotFoundException(id);
     }
 
-    public String addLat(String mediaName,double latitude){
-        Media media = projectService.searchMedia(mediaName);
+    public String addLat(String id,double latitude){
+        Media media = projectService.searchMedia(id);
 
         if(media != null){
             project.deleteMedia(media);
@@ -97,6 +99,50 @@ public class MediaService {
             return "Media succesfully changed latitude";
         }
 
-        throw new MediaNotFoundException(mediaName);
+        throw new MediaNotFoundException(id);
+    }
+
+    public Media changeAll(String id, Media updates){
+        Media media = projectService.searchMedia(id);
+        if (media == null) {
+            throw new MediaNotFoundException(id);
+        }
+
+        String oldName = media.getName();
+        String newName = updates.getName();
+
+        //defining the directory for user media files
+        String workingDir = System.getProperty("user.dir");
+        File oldFile = new File(workingDir + File.separator + "userMedia" + File.separator + oldName);
+        File newFile = new File(workingDir + File.separator + "userMedia" + File.separator + newName);
+
+        if (oldFile.exists()) {
+            boolean renamed = oldFile.renameTo(newFile);
+            if (!renamed) {
+                throw new RuntimeException("Failed to rename file on the filesystem.");
+            }
+        } else {
+            System.out.println("File not found in userMedia folder: " + oldName);
+            throw new MediaNotFoundException(oldName);
+        }
+
+        project.deleteMedia(media);
+
+        if (updates.getName() != null) {
+            media.setName(updates.getName());
+        }
+        if (updates.getAnnotations() != null) {
+            media.setAnnotations(updates.getAnnotations());
+        }
+        if (updates.getLatitude() != 0) {
+            media.setLatitude(updates.getLatitude());
+        }
+        if (updates.getLongitude() != 0) {
+            media.setLongitude(updates.getLongitude());
+        }
+
+        project.addMedia(media);
+
+        return media;
     }
 }

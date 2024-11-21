@@ -57,11 +57,11 @@ public class ProjectController {
 
 
 
-    @GetMapping("/search/{name}")
-    public Media searchMedia(@PathVariable String name) {
-        Media media = projectService.searchMedia(name);
+    @GetMapping("/search/{id}")
+    public Media searchMedia(@PathVariable String id) {
+        Media media = projectService.searchMedia(id);
         if(media==null){
-            throw new MediaNotFoundException(name);
+            throw new MediaNotFoundException(id);
         }
         return media;
     }
@@ -74,10 +74,10 @@ public class ProjectController {
         return projectService.renameProject(name);
     }
 
-    @DeleteMapping("/delete/{name}")
+    @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteMedia(@PathVariable String name) {
-        projectService.deleteMedia(name);
+    public void deleteMediaFinal(@PathVariable String id) {
+        projectService.deleteMediaFinal(id);
     }
 
     @DeleteMapping("/deleteAll")

@@ -126,10 +126,10 @@ public class ProjectService {
 
     //searches the media in a project, returns media object w features of the media
 
-    public Media searchMedia(String name) {
+    public Media searchMedia(String id) {
 
             //Media media = globalLookUp.get(name);
-            Media media = project.getMediaByName(name);
+            Media media = project.getMediaByID(id);
             return media;
 
 
@@ -137,8 +137,8 @@ public class ProjectService {
 
     //deletes media given an input of an existing media name
 
-    public void deleteMedia(String name){
-        Media media = searchMedia(name);
+    public void deleteMedia(String id){
+        Media media = searchMedia(id);
         String mediaName = media.getName();
         if (media != null ) {
             project.deleteMedia(media);
@@ -146,7 +146,7 @@ public class ProjectService {
 
         } else {
             System.out.println("medianotfoundexception");
-            throw new MediaNotFoundException(name);
+            throw new MediaNotFoundException(id);
         }
     }
 
@@ -193,5 +193,32 @@ public class ProjectService {
     }
     public List<Media> allMedia(){
         return project.getMediaList();
+    }
+
+    public void deleteMediaFinal(String id) {
+        String workingDir = System.getProperty("user.dir");
+        String userMediaDir = workingDir + File.separator + "userMedia";
+
+        // Search for the media object
+        Media media = searchMedia(id);
+        if (media != null) {
+            String mediaName = media.getName();
+            File mediaFile = new File(userMediaDir + File.separator + mediaName);
+
+            if (mediaFile.exists()) {
+                if (mediaFile.delete()) {
+                    project.deleteMedia(media);
+                    System.out.println(mediaName + " deleted");
+                } else {
+                    System.out.println("Failed to delete " + mediaName);
+                    throw new IllegalStateException("deletion failed");
+                }
+            } else {
+                System.out.println("File not found: " + mediaName);
+                throw new MediaNotFoundException(id);
+            }
+        } else {
+            throw new MediaNotFoundException(id);
+        }
     }
 }

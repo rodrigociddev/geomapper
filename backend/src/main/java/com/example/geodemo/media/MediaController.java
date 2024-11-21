@@ -1,6 +1,7 @@
 package com.example.geodemo.media;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -18,24 +19,35 @@ public class MediaController {
         this.mediaService = mediaService;
     }
 
-    @PatchMapping("/rename/{oldName}")
-    public String renameMedia(@PathVariable String oldName, @RequestParam String newName) {
-        return mediaService.renameMedia(oldName, newName);
+    @PatchMapping("/rename/{id}")
+    public String renameMedia(@PathVariable String id, @RequestParam String newName) {
+        return mediaService.renameMedia(id, newName);
     }
 
-    @PatchMapping("/annotate/{mediaName}")
-    public String addAnnotations(@PathVariable String mediaName, @RequestParam String annotation) {
-        return mediaService.addAnnotations(mediaName, annotation);
+    @PatchMapping("/annotate/{id}")
+    public String addAnnotations(@PathVariable String id, @RequestParam String annotation) {
+        return mediaService.addAnnotations(id, annotation);
     }
 
-    @PatchMapping("/longitude/{mediaName}")
-    public String addLong(@PathVariable String mediaName, @RequestBody double longitude) {
-        return mediaService.addLong(mediaName, longitude);
+    @PatchMapping("/longitude/{id}")
+    public String addLong(@PathVariable String id, @RequestBody double longitude) {
+        return mediaService.addLong(id, longitude);
     }
 
-    @PatchMapping("/latitude/{mediaName}")
-    public String addLat(@PathVariable String mediaName, @RequestBody double latitude) {
-        return mediaService.addLat(mediaName, latitude);
+    @PatchMapping("/latitude/{id}")
+    public String addLat(@PathVariable String id, @RequestBody double latitude) {
+        return mediaService.addLat(id, latitude);
+    }
+
+    @PatchMapping("/changeAll/{id}")
+    public ResponseEntity<Media> changeAll (@PathVariable String id, @RequestBody Media updated){
+        try{
+            Media media = changeAll(id,updated).getBody();
+
+            return ResponseEntity.ok(media);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 }
 
