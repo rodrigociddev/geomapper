@@ -26,6 +26,25 @@ function addMediaRequest(filePath){
 
     
 }
+
+function deleteMediaRequest(uuids){
+    axios.delete(`${baseUrl}/project/batch-delete`, {
+                data: uuids, // Pass the array of IDs in the request body
+    })
+    .then((response)=>{
+        console.log("batch delete sent")
+    })
+    .catch((error)=>{
+        if (error.response) {
+            console.error('Batch delete failed:', error.response.data);
+        } else {
+            console.error('Error:', error.message);
+        }
+    })
+}
+        
+
 module.exports={
-    addMediaRequest
+    addMediaRequest,
+    deleteMediaRequest
 }

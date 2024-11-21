@@ -53,12 +53,12 @@ public class Project {
     // adding media to both the list(maintains order) and lookup
     public void addMedia(Media media) {
         mediaList.add(media);
-        mediaLookUp.put(media.getID(), media);
+        mediaLookUp.put(media.getUUID(), media);
     }
 
     public void deleteMedia(Media media) {
         mediaList.remove(media);
-        mediaLookUp.remove(media.getID(), media);
+        mediaLookUp.remove(media.getUUID(), media);
     }
 
     public void deleteAllMedia(){

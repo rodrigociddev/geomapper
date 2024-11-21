@@ -35,7 +35,7 @@ public class MediaService {
             throw new MediaNotFoundException(id);
         }
 
-        String oldName = media.getName();
+        String oldName = media.getTitle();
 
         //defining the directory for user media files
         String workingDir = System.getProperty("user.dir");
@@ -53,7 +53,7 @@ public class MediaService {
         }
 
         project.deleteMedia(media);
-        media.setName(newName);
+        media.setTitle(newName);
         project.addMedia(media);
 
         System.out.println("Changed " + oldName + " into " + newName);
@@ -108,8 +108,8 @@ public class MediaService {
             throw new MediaNotFoundException(id);
         }
 
-        String oldName = media.getName();
-        String newName = updates.getName();
+        String oldName = media.getTitle();
+        String newName = updates.getTitle();
 
         //defining the directory for user media files
         String workingDir = System.getProperty("user.dir");
@@ -128,8 +128,8 @@ public class MediaService {
 
         project.deleteMedia(media);
 
-        if (updates.getName() != null) {
-            media.setName(updates.getName());
+        if (updates.getTitle() != null) {
+            media.setTitle(updates.getTitle());
         }
         if (updates.getAnnotations() != null) {
             media.setAnnotations(updates.getAnnotations());
