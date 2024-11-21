@@ -33,11 +33,6 @@ app.on('ready', () => {
     saveProject();
   });
 
-  // Listen for open project event from renderer process
-  ipcMain.on('open-project', () => {
-    openProject();
-  });
-
   // Listen for export event from renderer process
   ipcMain.on('export', (event, format) => {
     exportFile(format);
@@ -134,13 +129,12 @@ function saveProject() {
     .then((result) => {
       if (!result.canceled) {
         const filePath = result.filePath;
-        const fileName = path.basename(filePath, path.extname(filePath)) + '.gmp';
         console.log('Saving project to:', filePath);
         axios.post('http://localhost:8080/export', null, {
           params: {
             format: 'PROJECT',
             filePath: path.dirname(filePath),
-            fileName: fileName
+            fileName: path.basename(filePath)
           }
         })
         .then(response => {
@@ -159,24 +153,12 @@ function openProject() {
   dialog
     .showOpenDialog(mainWindow, {
       properties: ['openFile'],
-      filters: [{ name: 'Project Files', extensions: ['gmp'] }],
+      filters: [{ name: 'Project Files', extensions: ['json', 'proj'] }],
     })
     .then((result) => {
       if (!result.canceled) {
-        const filePath = result.filePaths[0];
-        console.log('Opening project from:', filePath);
-        axios.post('http://localhost:8080/loadProject', null, {
-          params: {
-            filePath: filePath
-          }
-        })
-        .then(response => {
-          console.log('Project loaded successfully:', response.data);
-          mainWindow.webContents.send('load-project', response.data);
-        })
-        .catch(error => {
-          console.error('Error loading project:', error.response?.data || error.message);
-        });
+        console.log('Project opened:', result.filePaths[0]);
+        mainWindow.webContents.send('open-project', result.filePaths[0]);
       }
     })
     .catch((err) => console.error('Error opening project:', err));
@@ -212,13 +194,12 @@ function exportKML() {
     .then((result) => {
       if (!result.canceled) {
         const filePath = result.filePath;
-        const fileName = path.basename(filePath, path.extname(filePath)) + '.kml';
         console.log('Exporting KML to:', filePath);
         axios.post('http://localhost:8080/export', null, {
           params: {
             format: 'KML',
             filePath: path.dirname(filePath),
-            fileName: fileName
+            fileName: path.basename(filePath)
           }
         })
         .then(response => {
@@ -243,13 +224,12 @@ function exportKMZ() {
     .then((result) => {
       if (!result.canceled) {
         const filePath = result.filePath;
-        const fileName = path.basename(filePath, path.extname(filePath)) + '.kmz';
         console.log('Exporting KMZ to:', filePath);
         axios.post('http://localhost:8080/export', null, {
           params: {
             format: 'KMZ',
             filePath: path.dirname(filePath),
-            fileName: fileName
+            fileName: path.basename(filePath)
           }
         })
         .then(response => {
@@ -274,13 +254,12 @@ function exportFile(format) {
     .then((result) => {
       if (!result.canceled) {
         const filePath = result.filePath;
-        const fileName = path.basename(filePath, path.extname(filePath)) + `.${format.toLowerCase()}`;
         console.log(`Exporting ${format} to:`, filePath);
         axios.post('http://localhost:8080/export', null, {
           params: {
             format: format,
             filePath: path.dirname(filePath),
-            fileName: fileName
+            fileName: path.basename(filePath)
           }
         })
         .then(response => {

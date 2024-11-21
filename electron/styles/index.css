@@ -52,3 +52,40 @@ body {
   /* transform: translateX(-50%); */
   width: 90%;
 }
+
+#main-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+#media-details {
+  flex-grow: 1;
+}
+
+#media-details .row {
+  margin-bottom: 1rem;
+}
+
+#save-changes-button {
+  margin-top: 1rem;
+  background-color: grey;
+  pointer-events: none;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#save-changes-button.active {
+  background-color: #28a745;
+  pointer-events: auto;
+}
+
+#selected-image {
+  max-height: 60%;
+  max-width: 80%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

@@ -2,7 +2,11 @@ package com.example.geodemo.media;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * RestController for operations on Media objects
@@ -20,12 +24,12 @@ public class MediaController {
     }
 
     @PatchMapping("/rename/{id}")
-    public String renameMedia(@PathVariable String id, @RequestParam String newName) {
+    public String renameMedia(@PathVariable String id, @RequestBody String newName) {
         return mediaService.renameMedia(id, newName);
     }
 
     @PatchMapping("/annotate/{id}")
-    public String addAnnotations(@PathVariable String id, @RequestParam String annotation) {
+    public String addAnnotations(@PathVariable String id, @RequestBody String annotation) {
         return mediaService.addAnnotations(id, annotation);
     }
 
