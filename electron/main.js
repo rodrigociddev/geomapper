@@ -107,13 +107,15 @@ function createMenuTemplate() {
 function addMedia() {
   dialog
     .showOpenDialog(mainWindow, {
-      properties: ['openFile'],
-      filters: [{ name: 'Media Files', extensions: ['jpg', 'png', 'mp4', 'avi'] }],
+      properties: ['openFile', 'multiSelections'], // Allow multiple file selections
+      filters: [{ name: 'Media Files', extensions: ['jpg', 'png'] }],
     })
     .then((result) => {
       if (!result.canceled) {
-        console.log('Media selected:', result.filePaths[0]);
-        mainWindow.webContents.send('add-media', result.filePaths[0]); // Send file path to renderer process
+        console.log('Media selected:', result.filePaths);
+        result.filePaths.forEach(filePath => {
+          mainWindow.webContents.send('add-media', filePath); // Send each file path to renderer process
+        });
       }
     })
     .catch((err) => console.error('Error adding media:', err));

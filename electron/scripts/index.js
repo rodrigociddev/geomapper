@@ -284,3 +284,9 @@ function updateAllMediaOnBackend() {
   const updatePromises = mediaItems.map(media => updateMediaOnBackend(media.id));
   return Promise.all(updatePromises);
 }
+
+window.addEventListener('error', (event) => {
+  if (event.message.includes("Request Autofill.enable failed") || event.message.includes("Request Autofill.setAddresses failed")) {
+    event.preventDefault();
+  }
+});
