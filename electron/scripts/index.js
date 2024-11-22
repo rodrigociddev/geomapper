@@ -190,7 +190,6 @@ function updateMediaDetails(mediaId, field, value) {
   if (media) {
     media[field] = value;
     changesMade = true;
-    document.getElementById('save-changes-button').classList.add('active');
     console.log(`Updated ${field} for media ID ${mediaId} to ${value}`);
   }
 }
@@ -198,76 +197,86 @@ function updateMediaDetails(mediaId, field, value) {
 // Function to call the backend to update media details
 function updateMediaOnBackend(mediaId) {
   const media = mediaItems.find((media) => media.id === mediaId);
-  if (!media) return;
+  if (!media) return Promise.resolve();
 
-  const requests = [
-    fetch(`/media/rename/${mediaId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ newName: media.title })
-    }),
-    fetch(`/media/latitude/${mediaId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ latitude: media.latitude })
-    }),
-    fetch(`/media/longitude/${mediaId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ longitude: media.longitude })
-    }),
-    fetch(`/media/annotate/${mediaId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ annotation: media.annotations })
+  return fetch(`/media/updateMedia/${media.uuid}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      title: media.title,
+      latitude: media.latitude,
+      longitude: media.longitude,
+      annotations: media.annotations
     })
-  ];
-
-  Promise.all(requests)
-    .then(responses => {
-      responses.forEach(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-      });
-      console.log('Success: Media details updated');
-      changesMade = false;
-      document.getElementById('save-changes-button').classList.remove('active');
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    console.log(`Success: Media details updated for media ID ${mediaId}`);
+    changesMade = false;
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
 }
 
-// Add event listeners to track changes
-document.getElementById('title').addEventListener('input', (event) => {
+let debounceTimeout;
+
+function debounce(func, wait) {
+  return function(...args) {
+    clearTimeout(debounceTimeout);
+    debounceTimeout = setTimeout(() => func.apply(this, args), wait);
+  };
+}
+
+// Add event listeners to track changes with debounce
+document.getElementById('title').addEventListener('input', debounce((event) => {
   if (currentSelectedMediaId !== null) {
     updateMediaDetails(currentSelectedMediaId, 'title', event.target.value);
   }
-});
+}, 300));
 
-document.getElementById('latitude').addEventListener('input', (event) => {
+document.getElementById('latitude').addEventListener('input', debounce((event) => {
   if (currentSelectedMediaId !== null) {
     updateMediaDetails(currentSelectedMediaId, 'latitude', event.target.value);
   }
-});
+}, 300));
 
-document.getElementById('longitude').addEventListener('input', (event) => {
+document.getElementById('longitude').addEventListener('input', debounce((event) => {
   if (currentSelectedMediaId !== null) {
     updateMediaDetails(currentSelectedMediaId, 'longitude', event.target.value);
   }
-});
+}, 300));
 
-document.getElementById('annotations').addEventListener('input', (event) => {
+document.getElementById('annotations').addEventListener('input', debounce((event) => {
   if (currentSelectedMediaId !== null) {
     updateMediaDetails(currentSelectedMediaId, 'annotations', event.target.value);
   }
-});
+}, 300));
 
-// Handle the Save Media Changes button click
-document.getElementById('save-changes-button').addEventListener('click', () => {
-  if (changesMade && currentSelectedMediaId !== null) {
-    console.log(`Saving changes for media ID ${currentSelectedMediaId}`);
-    updateMediaOnBackend(currentSelectedMediaId);
-  }
-});
+function saveProject() {
+  // Call updateAllMediaOnBackend before saving the project
+  updateAllMediaOnBackend().then(() => {
+    window.electronAPI.saveProject();
+  });
+}
+
+function exportKML() {
+  // Call updateAllMediaOnBackend before exporting KML
+  updateAllMediaOnBackend().then(() => {
+    window.electronAPI.export('KML');
+  });
+}
+
+function exportKMZ() {
+  // Call updateAllMediaOnBackend before exporting KMZ
+  updateAllMediaOnBackend().then(() => {
+    window.electronAPI.export('KMZ');
+  });
+}
+
+function updateAllMediaOnBackend() {
+  const updatePromises = mediaItems.map(media => updateMediaOnBackend(media.id));
+  return Promise.all(updatePromises);
+}

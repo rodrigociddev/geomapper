@@ -119,49 +119,62 @@ function addMedia() {
     .catch((err) => console.error('Error adding media:', err));
 }
 
+// Call updateMedia before saving the project
 function saveProject() {
-  dialog
-    .showSaveDialog(mainWindow, {
-      title: 'Save Project',
-      defaultPath: path.join(app.getPath('documents'), 'project.gmp'),
-      filters: [{ name: 'Project Files', extensions: ['gmp'] }],
-    })
-    .then((result) => {
-      if (!result.canceled) {
-        const filePath = result.filePath;
-        console.log('Saving project to:', filePath);
-        axios.post('http://localhost:8080/export', null, {
-          params: {
-            format: 'PROJECT',
-            filePath: path.dirname(filePath),
-            fileName: path.basename(filePath)
-          }
-        })
-        .then(response => {
-          console.log('Project saved successfully:', response.data);
-          fs.writeFileSync(filePath, response.data);
-        })
-        .catch(error => {
-          console.error('Error saving project:', error.response?.data || error.message);
-        });
-      }
-    })
-    .catch((err) => console.error('Error saving project:', err));
+  updateMedia().then(() => {
+    dialog
+      .showSaveDialog(mainWindow, {
+        title: 'Save Project',
+        defaultPath: path.join(app.getPath('documents'), 'project.gmp'),
+        filters: [{ name: 'Project Files', extensions: ['gmp'] }],
+      })
+      .then((result) => {
+        if (!result.canceled) {
+          const filePath = result.filePath;
+          console.log('Saving project to:', filePath);
+          axios.post('http://localhost:8080/export', null, {
+            params: {
+              format: 'PROJECT',
+              filePath: path.dirname(filePath),
+              fileName: path.basename(filePath)
+            }
+          })
+          .then(response => {
+            console.log('Project saved successfully:', response.data);
+            fs.writeFileSync(filePath, response.data);
+          })
+          .catch(error => {
+            console.error('Error saving project:', error.response?.data || error.message);
+          });
+        }
+      })
+      .catch((err) => console.error('Error saving project:', err));
+  });
 }
 
 function openProject() {
   dialog
     .showOpenDialog(mainWindow, {
       properties: ['openFile'],
-      filters: [{ name: 'Project Files', extensions: ['json', 'proj'] }],
+      filters: [{ name: 'Project Files', extensions: ['gmp'] }],
     })
     .then((result) => {
       if (!result.canceled) {
-        console.log('Project opened:', result.filePaths[0]);
-        mainWindow.webContents.send('open-project', result.filePaths[0]);
+        const filePath = result.filePaths[0];
+        console.log('Project opened:', filePath); // Debugging comment
+        axios.post('http://localhost:8080/loadProject', null, {
+          params: { filePath: filePath }
+        })
+        .then(response => {
+          console.log('Project loaded successfully:', response.data); // Debugging comment
+          mainWindow.webContents.send('open-project', response.data); // Send loaded data to renderer process
+        })
+        .catch(error => {
+          console.error('Error loading project:', error.response?.data || error.message); // Debugging comment
+        });
       }
     })
-    .catch((err) => console.error('Error opening project:', err));
+    .catch((err) => console.error('Error opening project:', err)); // Debugging comment
 }
 
 function newProject() {
@@ -184,64 +197,70 @@ function deleteSelected() {
   mainWindow.webContents.send('delete-selected');
 }
 
+// Call updateMedia before exporting KML
 function exportKML() {
-  dialog
-    .showSaveDialog(mainWindow, {
-      title: 'Export KML',
-      defaultPath: path.join(app.getPath('downloads'), 'export.kml'),
-      filters: [{ name: 'KML Files', extensions: ['kml'] }],
-    })
-    .then((result) => {
-      if (!result.canceled) {
-        const filePath = result.filePath;
-        console.log('Exporting KML to:', filePath);
-        axios.post('http://localhost:8080/export', null, {
-          params: {
-            format: 'KML',
-            filePath: path.dirname(filePath),
-            fileName: path.basename(filePath)
-          }
-        })
-        .then(response => {
-          console.log('KML exported successfully:', response.data);
-          fs.writeFileSync(filePath, response.data);
-        })
-        .catch(error => {
-          console.error('Error exporting KML:', error.response?.data || error.message);
-        });
-      }
-    })
-    .catch((err) => console.error('Error exporting KML:', err));
+  updateMedia().then(() => {
+    dialog
+      .showSaveDialog(mainWindow, {
+        title: 'Export KML',
+        defaultPath: path.join(app.getPath('downloads'), 'export.kml'),
+        filters: [{ name: 'KML Files', extensions: ['kml'] }],
+      })
+      .then((result) => {
+        if (!result.canceled) {
+          const filePath = result.filePath;
+          console.log('Exporting KML to:', filePath);
+          axios.post('http://localhost:8080/export', null, {
+            params: {
+              format: 'KML',
+              filePath: path.dirname(filePath),
+              fileName: path.basename(filePath)
+            }
+          })
+          .then(response => {
+            console.log('KML exported successfully:', response.data);
+            fs.writeFileSync(filePath, response.data);
+          })
+          .catch(error => {
+            console.error('Error exporting KML:', error.response?.data || error.message);
+          });
+        }
+      })
+      .catch((err) => console.error('Error exporting KML:', err));
+  });
 }
 
+// Call updateMedia before exporting KMZ
 function exportKMZ() {
-  dialog
-    .showSaveDialog(mainWindow, {
-      title: 'Export KMZ',
-      defaultPath: path.join(app.getPath('downloads'), 'export.kmz'),
-      filters: [{ name: 'KMZ Files', extensions: ['kmz'] }],
-    })
-    .then((result) => {
-      if (!result.canceled) {
-        const filePath = result.filePath;
-        console.log('Exporting KMZ to:', filePath);
-        axios.post('http://localhost:8080/export', null, {
-          params: {
-            format: 'KMZ',
-            filePath: path.dirname(filePath),
-            fileName: path.basename(filePath)
-          }
-        })
-        .then(response => {
-          console.log('KMZ exported successfully:', response.data);
-          fs.writeFileSync(filePath, response.data);
-        })
-        .catch(error => {
-          console.error('Error exporting KMZ:', error.response?.data || error.message);
-        });
-      }
-    })
-    .catch((err) => console.error('Error exporting KMZ:', err));
+  updateMedia().then(() => {
+    dialog
+      .showSaveDialog(mainWindow, {
+        title: 'Export KMZ',
+        defaultPath: path.join(app.getPath('downloads'), 'export.kmz'),
+        filters: [{ name: 'KMZ Files', extensions: ['kmz'] }],
+      })
+      .then((result) => {
+        if (!result.canceled) {
+          const filePath = result.filePath;
+          console.log('Exporting KMZ to:', filePath);
+          axios.post('http://localhost:8080/export', null, {
+            params: {
+              format: 'KMZ',
+              filePath: path.dirname(filePath),
+              fileName: path.basename(filePath)
+            }
+          })
+          .then(response => {
+            console.log('KMZ exported successfully:', response.data);
+            fs.writeFileSync(filePath, response.data);
+          })
+          .catch(error => {
+            console.error('Error exporting KMZ:', error.response?.data || error.message);
+          });
+        }
+      })
+      .catch((err) => console.error('Error exporting KMZ:', err));
+  });
 }
 
 function exportFile(format) {
@@ -276,6 +295,24 @@ function exportFile(format) {
       }
     })
     .catch((err) => console.error(`Error exporting ${format}:`, err));
+}
+
+// Function to update media details on backend
+function updateMedia() {
+  console.log("Updating media details");
+  return mainWindow.webContents.executeJavaScript('mediaItems')
+    .then(mediaItems => {
+      const updateRequests = mediaItems.map(media => {
+        return axios.patch(`http://localhost:8080/media/updateMedia/${media.uuid}`, {
+          title: media.title,
+          latitude: media.latitude,
+          longitude: media.longitude,
+          annotations: media.annotations
+        });
+      });
+
+      return Promise.all(updateRequests);
+    });
 }
 
 function showAboutDialog() {
