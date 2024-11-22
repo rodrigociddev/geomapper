@@ -9,6 +9,7 @@ app.on('ready', () => {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
+    icon: path.join(__dirname, './assets/globeicon.png'), // Set the icon here
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -158,7 +159,7 @@ function openProject() {
   dialog
     .showOpenDialog(mainWindow, {
       properties: ['openFile'],
-      filters: [{ name: 'Project Files', extensions: ['gmp'] }],
+      filters: [{ name: 'Project Files', extensions: ['gmp', 'kmz'] }],
     })
     .then((result) => {
       if (!result.canceled) {
@@ -346,7 +347,7 @@ function showAboutDialog() {
     type: 'info',
     buttons: ['OK'],
     title: 'About',
-    message: 'GeoTagR',
-    detail: 'Version: 1.0.0\nAuthor: Your Name',
+    message: 'GeoMapper',
+    detail: 'Version: 1.0.0\nAuthors: Christopher Alfonso, Alexander Delgado, Nicholas Garcia, Alex Sebastian Jong A Kiem, Rodrigo Lopes',
   });
 }
