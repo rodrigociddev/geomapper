@@ -1,21 +1,31 @@
 package com.example.geodemo.export.exporters;
 
-import com.example.geodemo.export.Exporter;
-import com.example.geodemo.export.builder.KmlBuilder;
-import com.example.geodemo.export.builder.KmlDom;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.file.Files;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.*;
-import java.nio.file.Files;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+
+import com.example.geodemo.export.Exporter;
+import com.example.geodemo.export.builder.KmlBuilder;
+import com.example.geodemo.export.builder.KmlDom;
 
 /**
  * Utilizes KmlBuilder to generate doc.kml, adds the image to the description(to be changed)
@@ -55,7 +65,7 @@ public class  KmzExporter implements Exporter {
         }
 
         //write kml to the zip file
-       buildArchive(dom,new File(System.getProperty("user.dir")+File.separator+"userMedia"), filePath, fileName+".kmz");
+       buildArchive(dom,new File(System.getProperty("user.dir")+File.separator+"userMedia"), filePath, fileName);
 
     }
 

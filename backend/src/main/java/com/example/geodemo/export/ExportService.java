@@ -31,7 +31,6 @@ public class ExportService {
     public void export(ExportFormat format,String filePath, String fileName) throws ParserConfigurationException, IOException, TransformerException {
         Exporter exporter = exporters.get(format.getExporterName());
         exporter.export(filePath,fileName);
-
     }
     //load .gmp
     public void loadProject(String filePath) throws IOException, ParserConfigurationException, SAXException {

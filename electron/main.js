@@ -178,8 +178,32 @@ function openProject() {
 }
 
 function newProject() {
-  console.log('New Project created');
-  mainWindow.webContents.send('new-project');
+  mainWindow.webContents.executeJavaScript('changesMade')
+    .then(changesMade => {
+      if (changesMade) {
+        dialog.showMessageBox(mainWindow, {
+          type: 'warning',
+          buttons: ['Yes', 'No'],
+          defaultId: 1,
+          title: 'Unsaved Changes',
+          message: 'There are unsaved changes, are you sure you want to start a new project?',
+        }).then(result => {
+          if (result.response === 0) {
+            resetApp();
+          }
+        });
+      } else {
+        resetApp();
+      }
+    })
+    .catch(error => {
+      console.error('Error checking for unsaved changes:', error);
+      resetApp();
+    });
+}
+
+function resetApp() {
+  mainWindow.webContents.send('reset-app');
 }
 
 function selectAll() {

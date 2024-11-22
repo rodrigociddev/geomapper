@@ -52,7 +52,7 @@ public class ExportController {
 
         // Convert the string to ExportFormat
         ExportFormat exportFormat = ExportFormat.valueOf(format.toUpperCase());
-
+        System.out.println("Exporting format: " + exportFormat.getExporterName());
         Path fullPath = Paths.get(filePath, fileName);
         System.out.println("Exporting to: " + fullPath);
 
@@ -63,6 +63,7 @@ public class ExportController {
     @PostMapping("/loadProject")
     public void importProject(@RequestParam String filePath)
             throws IOException, ParserConfigurationException, SAXException {
+        System.out.println("Loading filePath: " + filePath);
         exportService.loadProject(filePath);
     }
 }

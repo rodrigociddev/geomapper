@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   selectAll: (callback) => ipcRenderer.on('select-all', callback),
   unselectAll: (callback) => ipcRenderer.on('unselect-all', callback),
   deleteSelected: (callback) => ipcRenderer.on('delete-selected', callback),
+  resetApp: (callback) => ipcRenderer.on('reset-app', callback)
 })
 
 contextBridge.exposeInMainWorld('requestsAPI', requests);

@@ -1,5 +1,7 @@
 // Keep track of media items
 const mediaItems = [];
+let currentSelectedMediaId = null;
+let changesMade = false;
 
 // Function to show default message
 function showDefaultMessage() {
@@ -17,13 +19,11 @@ function showMediaDetails() {
 
 // Centralized function to handle adding media
 function handleAddMedia(filePath) {
-
   const imageElement = document.getElementById('selected-image');
 
   window.requestsAPI.addMediaRequest(filePath)
     .then(media => {
-
-      const { uuid, title, latitude, longitude,userMediaPath, annotations } = media;
+      const { uuid, title, latitude, longitude, userMediaPath, annotations } = media;
       if (imageElement) {
         // Update the selected image display
         imageElement.src = `file://${userMediaPath}`;
@@ -32,7 +32,7 @@ function handleAddMedia(filePath) {
         // Create a new media object
         const newMedia = {
           id: mediaItems.length,
-          uuid:uuid,
+          uuid: uuid,
           filePath: `file://${userMediaPath}`,
           title: title,
           latitude: latitude,
@@ -42,13 +42,13 @@ function handleAddMedia(filePath) {
     
         mediaItems.push(newMedia); // Add to media items array
         renderMediaList(); // Re-render the sidebar
-        selectMedia(mediaItems.length-1) // select newly added media
+        selectMedia(mediaItems.length - 1); // select newly added media
+        changesMade = true; // Mark changes as made
       } else {
         console.error('Image element not found in the DOM.');
       }
-    })
+    });
 }
-
 
 // Listen for the 'add-media' event from the main process
 window.electronAPI.addMedia((event, filePath) => {
@@ -59,6 +59,14 @@ window.electronAPI.addMedia((event, filePath) => {
   }
 });
 
+// Listen for the 'reset-app' event from the main process
+window.electronAPI.resetApp(() => {
+  mediaItems.length = 0;
+  currentSelectedMediaId = null;
+  changesMade = false;
+  document.getElementById('media-list').innerHTML = '';
+  showDefaultMessage();
+});
 
 // Handle the Add Media button click
 document.getElementById('add-media-button').addEventListener('click', () => {
@@ -104,9 +112,6 @@ function renderMediaList() {
   });
 }
 
-let currentSelectedMediaId = null;
-let changesMade = false;
-
 // Select a media block and display its details
 function selectMedia(mediaId) {
   const selectedMedia = mediaItems.find((media) => media.id === mediaId);
@@ -141,11 +146,9 @@ window.electronAPI.deleteSelected(() => {
   const selectedBlocks = document.querySelectorAll('.media-block.bg-primary');
 
   //array that will be passed to the delete request
-  const uuids=[];
+  const uuids = [];
 
   selectedBlocks.forEach((block) => {
-    
-
     const mediaId = parseInt(block.dataset.id, 10);
     
     // Remove the block from the DOM
@@ -172,16 +175,16 @@ window.electronAPI.deleteSelected(() => {
 
 // Select All: Highlight all sidebar blocks
 window.electronAPI.selectAll(() => {
-    document.querySelectorAll('.media-block').forEach((block) => {
-        block.classList.add('bg-primary', 'text-white');
-    });
+  document.querySelectorAll('.media-block').forEach((block) => {
+    block.classList.add('bg-primary', 'text-white');
+  });
 });
 
 // Unselect All: Remove highlighting from all sidebar blocks
 window.electronAPI.unselectAll(() => {
-    document.querySelectorAll('.media-block').forEach((block) => {
-        block.classList.remove('bg-primary', 'text-white');
-    });
+  document.querySelectorAll('.media-block').forEach((block) => {
+    block.classList.remove('bg-primary', 'text-white');
+  });
 });
 
 // Function to update media details
@@ -259,6 +262,7 @@ function saveProject() {
   // Call updateAllMediaOnBackend before saving the project
   updateAllMediaOnBackend().then(() => {
     window.electronAPI.saveProject();
+    changesMade = false; // Mark changes as saved
   });
 }
 
