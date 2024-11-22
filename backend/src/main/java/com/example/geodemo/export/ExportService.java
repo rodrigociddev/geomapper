@@ -2,11 +2,13 @@ package com.example.geodemo.export;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import com.example.geodemo.media.Media;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
@@ -34,8 +36,8 @@ public class ExportService {
         return exporter.export(filePath,fileName);
     }
     //load .gmp
-    public void loadProject(String filePath) throws IOException, ParserConfigurationException, SAXException {
-        importer.load(filePath);
+    public List<Media> loadProject(String filePath) throws IOException, ParserConfigurationException, SAXException {
+        return importer.load(filePath);
     }
 
 

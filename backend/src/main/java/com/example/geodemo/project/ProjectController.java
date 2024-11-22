@@ -2,11 +2,9 @@ package com.example.geodemo.project;
 
 import com.example.geodemo.exceptions.exception.MediaNotFoundException;
 import com.example.geodemo.media.Media;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -87,9 +85,10 @@ public class ProjectController {
             projectService.deleteMediaFinal(uuid);
         }
     }
-    @DeleteMapping("/deleteAll")
+    @DeleteMapping("/newProject")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAllMedia() {
+    public void newProject() {
+        System.out.println("new project called");
         projectService.deleteAllMedia();
     }
 

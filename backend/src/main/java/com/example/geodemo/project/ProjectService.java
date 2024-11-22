@@ -151,14 +151,8 @@ public class ProjectService {
     }
 
     //simply deletes all media in a project file
-    public String deleteAllMedia(){
-        if (project.checkEmpty()){
-            System.out.println();
-            return "Project is already empty";
-        } else {
-            project.deleteAllMedia();
-            return "Media has been deleted";
-        }
+    public void deleteAllMedia(){
+        project.reset();
     }
     //static methods for saving user media to temporary directory in {working directory}/userMedia
     //(to prevent issues if the user modifies the original media we make hard copies of the media imported)

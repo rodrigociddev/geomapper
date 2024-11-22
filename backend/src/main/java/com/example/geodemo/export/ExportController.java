@@ -4,10 +4,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import com.example.geodemo.media.Media;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -74,9 +76,9 @@ public class ExportController {
 
     // Load project state from .gmp file (also works with .kmz)
     @PostMapping("/loadProject")
-    public void importProject(@RequestParam String filePath)
+    public List<Media> importProject(@RequestParam String filePath)
             throws IOException, ParserConfigurationException, SAXException {
         System.out.println("Loading filePath: " + filePath);
-        exportService.loadProject(filePath);
+        return exportService.loadProject(filePath);
     }
 }

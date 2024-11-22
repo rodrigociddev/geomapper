@@ -207,8 +207,18 @@ function newProject() {
 }
 
 function resetApp() {
+  axios
+    .delete('http://localhost:8080/project/newProject')
+    .then((response) => {
+      console.log('New project initialized successfully:', response.data);
+    })
+    .catch((error) => {
+      console.error('Failed to initialize new project:', error.response?.data || error.message);
+    });
   mainWindow.webContents.send('reset-app');
+  
 }
+
 
 function selectAll() {
   console.log('Select All clicked');

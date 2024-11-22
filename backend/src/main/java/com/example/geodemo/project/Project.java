@@ -27,6 +27,9 @@ public class Project {
     static private HashMap<String, Media> mediaLookUp;
 
     public Project() {
+        reset();
+    }
+    public void reset(){
         mediaList = new ArrayList<>();
         mediaLookUp = new HashMap<>();
 
@@ -42,12 +45,7 @@ public class Project {
                 System.out.println(e.toString());
                 System.exit(1);
             }
-
         }userMediaDir.mkdirs();
-
-
-
-
     }
 
     // adding media to both the list(maintains order) and lookup
@@ -64,6 +62,7 @@ public class Project {
     public void deleteAllMedia(){
         mediaList.clear();
         mediaLookUp.clear();
+
     }
 
     public boolean checkEmpty(){
