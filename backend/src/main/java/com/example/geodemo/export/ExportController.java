@@ -1,5 +1,6 @@
 package com.example.geodemo.export;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -8,7 +9,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,9 +44,9 @@ public class ExportController {
      * @throws TransformerException
      */
     @PostMapping("/export")
-    public void export(@RequestParam(required = true) String format, // Ensure format is required
-                       @RequestParam(required = true) String filePath, // Make filePath required
-                       @RequestParam String fileName)
+    public ResponseEntity<byte []> export(@RequestParam(required = true) String format, // Ensure format is required
+                                 @RequestParam(required = true) String filePath, // Make filePath required
+                                 @RequestParam String fileName)
             throws ParserConfigurationException, IOException, TransformerException {
 
         if (format == null || format.isEmpty()) {
@@ -56,7 +59,17 @@ public class ExportController {
         Path fullPath = Paths.get(filePath, fileName);
         System.out.println("Exporting to: " + fullPath);
 
-        exportService.export(exportFormat, filePath, fileName);
+        ByteArrayOutputStream byteArrayOutputStream = exportService.export(exportFormat, filePath, fileName);
+        byte[] content = byteArrayOutputStream.toByteArray();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/octet-stream");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(content);
+
     }
 
     // Load project state from .gmp file (also works with .kmz)

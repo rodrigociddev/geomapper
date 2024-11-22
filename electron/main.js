@@ -140,11 +140,12 @@ function saveProject() {
               format: 'PROJECT',
               filePath: path.dirname(filePath),
               fileName: path.basename(filePath)
-            }
+            },
+            responseType: 'arraybuffer'
           })
           .then(response => {
             console.log('Project saved successfully:', response.data);
-            fs.writeFileSync(filePath, response.data);
+            fs.writeFileSync(filePath, Buffer.from(response.data));
           })
           .catch(error => {
             console.error('Error saving project:', error.response?.data || error.message);
@@ -275,11 +276,12 @@ function exportKMZ() {
               format: 'KMZ',
               filePath: path.dirname(filePath),
               fileName: path.basename(filePath)
-            }
+            },
+            responseType:'arraybuffer'
           })
           .then(response => {
             console.log('KMZ exported successfully:', response.data);
-            fs.writeFileSync(filePath, response.data);
+            fs.writeFileSync(filePath, Buffer.from(response.data));
           })
           .catch(error => {
             console.error('Error exporting KMZ:', error.response?.data || error.message);

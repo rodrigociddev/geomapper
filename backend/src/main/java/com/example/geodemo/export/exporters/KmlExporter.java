@@ -1,5 +1,6 @@
 package com.example.geodemo.export.exporters;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -28,7 +29,8 @@ public class KmlExporter implements Exporter {
         this.kmlBuilder = kmlBuilder;
     }
 
-    public void export(String filePath, String fileName) throws TransformerException, ParserConfigurationException {
+    public ByteArrayOutputStream export(String filePath, String fileName) throws TransformerException, ParserConfigurationException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -39,9 +41,10 @@ public class KmlExporter implements Exporter {
 
         DOMSource source = new DOMSource(kmldom.getKmlDoc());
 
-        StreamResult result = new StreamResult(new File(filePath+"/"+fileName));
+        StreamResult memoryResult = new StreamResult(byteArrayOutputStream);
 
-        transformer.transform(source,result);
+        transformer.transform(source,memoryResult);
+        return byteArrayOutputStream;
 
 
     }

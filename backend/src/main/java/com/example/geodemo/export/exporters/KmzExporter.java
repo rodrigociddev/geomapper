@@ -1,9 +1,6 @@
 package com.example.geodemo.export.exporters;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -43,7 +40,7 @@ public class  KmzExporter implements Exporter {
     }
 
     @Override
-    public void export(String filePath, String fileName) throws TransformerException, ParserConfigurationException, IOException {
+    public ByteArrayOutputStream export(String filePath, String fileName) throws TransformerException, ParserConfigurationException, IOException {
         KmlDom kmlDom = kmlBuilder.buildKML();
         Document dom = kmlDom.getKmlDoc();
 
@@ -65,7 +62,7 @@ public class  KmzExporter implements Exporter {
         }
 
         //write kml to the zip file
-       buildArchive(dom,new File(System.getProperty("user.dir")+File.separator+"userMedia"), filePath, fileName);
+       return buildArchive(dom,new File(System.getProperty("user.dir")+File.separator+"userMedia"), filePath, fileName);
 
     }
 
@@ -78,8 +75,10 @@ public class  KmzExporter implements Exporter {
      * @throws IOException
      * @throws TransformerConfigurationException
      */
-    protected void buildArchive(Document dom, File mediaDir, String filePath, String fileName) throws IOException, TransformerConfigurationException {
-        ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(filePath+File.separator+fileName));
+    protected ByteArrayOutputStream buildArchive(Document dom, File mediaDir, String filePath, String fileName) throws IOException, TransformerConfigurationException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        ZipOutputStream zipOut = new ZipOutputStream(byteArrayOutputStream);
         zipOut.putNextEntry(new ZipEntry("doc.kml"));
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -108,5 +107,6 @@ public class  KmzExporter implements Exporter {
         }
 
         zipOut.close();
+        return byteArrayOutputStream;
     }
 }

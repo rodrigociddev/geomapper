@@ -1,5 +1,6 @@
 package com.example.geodemo.export.exporters;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -28,9 +29,9 @@ public class ProjectExporter implements Exporter {
     }
 
     @Override
-    public void export(String filePath, String fileName) throws TransformerException, ParserConfigurationException, IOException {
+    public ByteArrayOutputStream export(String filePath, String fileName) throws TransformerException, ParserConfigurationException, IOException {
         KmlDom kmlDom = kmlBuilder.buildKML();
-        kmzExporter.buildArchive(kmlDom.getKmlDoc(), new File(System.getProperty("user.dir")+File.separator+"userMedia"),filePath, fileName);
+        return kmzExporter.buildArchive(kmlDom.getKmlDoc(), new File(System.getProperty("user.dir")+File.separator+"userMedia"),filePath, fileName);
 
     }
 }
