@@ -4,13 +4,17 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron .",
+    "clean": "rimraf dist",
+    "build": "npm run clean && cd ../backend && gradlew.bat build && cd ../electron && electron-builder"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^33.2.0"
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8",
+    "rimraf": "^3.0.2"
   },
   "dependencies": {
     "axios": "^1.7.7",
@@ -79,5 +83,33 @@
     "wrappy": "^1.0.2",
     "yauzl": "^2.10.0"
   },
-  "description": ""
+  "description": "",
+  "build": {
+    "appId": "com.example.geomapper",
+    "productName": "GeoMapper",
+    "files": [
+      "!*.*",
+      "dist/",
+      "main.js",
+      "package.json",
+      "preload.js",
+      "index.html",
+      "assets/",
+      "scripts/",
+      "styles/",
+      "../backend/build/libs/geomapper-backend-0.1.jar"
+    ],
+    "extraResources": [
+      {
+        "from": "../backend/build/libs/geomapper-backend-0.1.jar",
+        "to": "geomapper-backend-0.1.jar"
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/globeicon.png"
+    },
+    "mac": {},
+    "linux": {}
+  }
 }
