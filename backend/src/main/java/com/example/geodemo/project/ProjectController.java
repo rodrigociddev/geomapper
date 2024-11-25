@@ -2,11 +2,9 @@ package com.example.geodemo.project;
 
 import com.example.geodemo.exceptions.exception.MediaNotFoundException;
 import com.example.geodemo.media.Media;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -57,11 +55,11 @@ public class ProjectController {
 
 
 
-    @GetMapping("/search/{name}")
-    public Media searchMedia(@PathVariable String name) {
-        Media media = projectService.searchMedia(name);
+    @GetMapping("/search/{id}")
+    public Media searchMedia(@PathVariable String id) {
+        Media media = projectService.searchMedia(id);
         if(media==null){
-            throw new MediaNotFoundException(name);
+            throw new MediaNotFoundException(id);
         }
         return media;
     }
@@ -74,15 +72,23 @@ public class ProjectController {
         return projectService.renameProject(name);
     }
 
-    @DeleteMapping("/delete/{name}")
+    @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteMedia(@PathVariable String name) {
-        projectService.deleteMedia(name);
+    public void deleteMediaFinal(@PathVariable String id) {
+        projectService.deleteMediaFinal(id);
     }
 
-    @DeleteMapping("/deleteAll")
+    @DeleteMapping("/batch-delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAllMedia() {
+    public void batchDelete(@RequestBody List<String> uuids){
+        for (String uuid:uuids){
+            projectService.deleteMediaFinal(uuid);
+        }
+    }
+    @DeleteMapping("/newProject")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void newProject() {
+        System.out.println("new project called");
         projectService.deleteAllMedia();
     }
 

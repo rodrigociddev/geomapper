@@ -27,6 +27,9 @@ public class Project {
     static private HashMap<String, Media> mediaLookUp;
 
     public Project() {
+        reset();
+    }
+    public void reset(){
         mediaList = new ArrayList<>();
         mediaLookUp = new HashMap<>();
 
@@ -42,28 +45,24 @@ public class Project {
                 System.out.println(e.toString());
                 System.exit(1);
             }
-
         }userMediaDir.mkdirs();
-
-
-
-
     }
 
     // adding media to both the list(maintains order) and lookup
     public void addMedia(Media media) {
         mediaList.add(media);
-        mediaLookUp.put(media.getName(), media);
+        mediaLookUp.put(media.getUUID(), media);
     }
 
     public void deleteMedia(Media media) {
         mediaList.remove(media);
-        mediaLookUp.remove(media.getName(), media);
+        mediaLookUp.remove(media.getUUID(), media);
     }
 
     public void deleteAllMedia(){
         mediaList.clear();
         mediaLookUp.clear();
+
     }
 
     public boolean checkEmpty(){
@@ -79,13 +78,13 @@ public class Project {
     }
 
     //looking up by name through hashmap
-    public Media getMediaByName(String name) {
-        return mediaLookUp.get(name);
+    public Media getMediaByID(String id) {
+        return mediaLookUp.get(id);
     }
 
     //just to check
-    public boolean containsMedia(String name) {
-        return mediaLookUp.containsKey(name);
+    public boolean containsMedia(String id) {
+        return mediaLookUp.containsKey(id);
     }
 
     public String getName() {

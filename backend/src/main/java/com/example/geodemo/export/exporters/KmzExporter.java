@@ -1,21 +1,28 @@
 package com.example.geodemo.export.exporters;
 
-import com.example.geodemo.export.Exporter;
-import com.example.geodemo.export.builder.KmlBuilder;
-import com.example.geodemo.export.builder.KmlDom;
+import java.io.*;
+import java.nio.file.Files;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.*;
-import java.nio.file.Files;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+
+import com.example.geodemo.export.Exporter;
+import com.example.geodemo.export.builder.KmlBuilder;
+import com.example.geodemo.export.builder.KmlDom;
 
 /**
  * Utilizes KmlBuilder to generate doc.kml, adds the image to the description(to be changed)
@@ -33,7 +40,7 @@ public class  KmzExporter implements Exporter {
     }
 
     @Override
-    public void export(String filePath, String fileName) throws TransformerException, ParserConfigurationException, IOException {
+    public ByteArrayOutputStream export(String filePath, String fileName) throws TransformerException, ParserConfigurationException, IOException {
         KmlDom kmlDom = kmlBuilder.buildKML();
         Document dom = kmlDom.getKmlDoc();
 
@@ -55,7 +62,7 @@ public class  KmzExporter implements Exporter {
         }
 
         //write kml to the zip file
-       buildArchive(dom,new File(System.getProperty("user.dir")+File.separator+"userMedia"), filePath, fileName+".kmz");
+       return buildArchive(dom,new File(System.getProperty("user.dir")+File.separator+"userMedia"), filePath, fileName);
 
     }
 
@@ -68,8 +75,10 @@ public class  KmzExporter implements Exporter {
      * @throws IOException
      * @throws TransformerConfigurationException
      */
-    protected void buildArchive(Document dom, File mediaDir, String filePath, String fileName) throws IOException, TransformerConfigurationException {
-        ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(filePath+File.separator+fileName));
+    protected ByteArrayOutputStream buildArchive(Document dom, File mediaDir, String filePath, String fileName) throws IOException, TransformerConfigurationException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        ZipOutputStream zipOut = new ZipOutputStream(byteArrayOutputStream);
         zipOut.putNextEntry(new ZipEntry("doc.kml"));
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -98,5 +107,6 @@ public class  KmzExporter implements Exporter {
         }
 
         zipOut.close();
+        return byteArrayOutputStream;
     }
 }

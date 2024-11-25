@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -35,10 +36,11 @@ public class Importer {
         this.project = project;
     }
 
-    public void load(String filePath) throws IOException, SAXException, ParserConfigurationException {
+    public List<Media> load(String filePath) throws IOException, SAXException, ParserConfigurationException {
         buildMedia(filePath);
         extractMedia(filePath, "userMedia");
-
+        System.out.println(project.getMediaList().size());
+        return project.getMediaList();
 
     }
 
@@ -103,7 +105,9 @@ public class Importer {
                 String latitude = coordinates.split(",")[1];
 
                 System.out.println("adding media: " + name);
-                project.addMedia(new Media(Double.parseDouble(longitude), Double.parseDouble(latitude),name,description));
+                Media media = new Media(Double.parseDouble(longitude), Double.parseDouble(latitude),name,description);
+                media.setUUID(UUID.randomUUID().toString());
+                project.addMedia(media);
 
 
 

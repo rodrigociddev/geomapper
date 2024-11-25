@@ -1,16 +1,17 @@
 package com.example.geodemo.media;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 /**
  * Represents Media added by the user
  */
 public class Media {
-    private String filePath;
 
+    //absolute path to file in userMedia
+    private String userMediaPath;
+    private String uuid;
     @NotNull
-    private String name;
+    private String title;
 
     private String annotations;
     private double longitude;
@@ -19,16 +20,16 @@ public class Media {
 
 
 
-    public Media(double latitude, double longitude, String name, String annotation){
+    public Media(double latitude, double longitude, String title, String annotation){
         this.latitude = latitude;
         this.longitude = longitude;
-        this.name = name;
+        this.title = title;
         this.annotations = annotation;
     }
 
-    public Media(double latitude, double longitude, String name) {
+    public Media(double latitude, double longitude, String title) {
 
-        this(latitude,longitude,name,"");
+        this(latitude,longitude, title,"");
     }
 
     public Media() {
@@ -51,12 +52,12 @@ public class Media {
         this.latitude = latitude;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getAnnotations() {
@@ -67,13 +68,27 @@ public class Media {
         this.annotations = annotations;
     }
 
+    public String getUUID(){
+        return this.uuid;
+    }
+    public void setUUID(String id){
+        this.uuid =id;
+    }
+    public void setUserMediaPath(String userMediaPath){
+        this.userMediaPath = userMediaPath;
+    }
+    public String getUserMediaPath(){
+        return this.userMediaPath;
+    }
+
+
     @Override
     public String toString() {
         return "Media{" +
                 "longitude=" + longitude +
                 ", latitude=" + latitude +
                 ", annotations=" + annotations +
-                ", name='" + name + '\'' +
+                ", name='" + title + '\'' +
                 '}';
     }
 }

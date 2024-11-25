@@ -1,15 +1,21 @@
 package com.example.geodemo.export.exporters;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.springframework.stereotype.Component;
+
 import com.example.geodemo.export.Exporter;
 import com.example.geodemo.export.builder.KmlBuilder;
 import com.example.geodemo.export.builder.KmlDom;
-import org.springframework.stereotype.Component;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.File;
 
 /**
  * Builds the KML using KmlBuilder and saves it on disk
@@ -23,7 +29,8 @@ public class KmlExporter implements Exporter {
         this.kmlBuilder = kmlBuilder;
     }
 
-    public void export(String filePath, String fileName) throws TransformerException, ParserConfigurationException {
+    public ByteArrayOutputStream export(String filePath, String fileName) throws TransformerException, ParserConfigurationException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -34,9 +41,10 @@ public class KmlExporter implements Exporter {
 
         DOMSource source = new DOMSource(kmldom.getKmlDoc());
 
-        StreamResult result = new StreamResult(new File(filePath+"/"+fileName+".kml"));
+        StreamResult memoryResult = new StreamResult(byteArrayOutputStream);
 
-        transformer.transform(source,result);
+        transformer.transform(source,memoryResult);
+        return byteArrayOutputStream;
 
 
     }

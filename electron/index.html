@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoMapper</title> 
+  <link rel="icon" href="./assets/globeicon.png"> 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./styles/index.css">
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row vh-100">
+      <!-- Sidebar -->
+      <div class="col-md-3 col-lg-2 bg-dark-blue vh-100 d-flex flex-column" id="sidebar">
+        <!-- Header -->
+        <div class="p-3">
+          <h4 class="text-center text-light-blue">Media</h4>
+        </div>
+        <!-- Content -->
+        <div class="flex-grow-1 overflow-auto">
+          <div id="media-list">
+
+          </div>
+        </div>
+        <!-- Button -->
+        <div class="p-3">
+          <button class="btn btn-primary add-media-button w-100" id="add-media-button">Add Media</button>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-md-9 col-lg-10 p-4 vh-100 overflow-auto">
+        <div id="main-content">
+          <p id="default-message" class="text-light-blue">Add media to get started.</p>
+          <div id="media-details" style="display: none;">
+            <form class="row">
+              <div class="col-6">
+                <label for="title" class="form-label text-light-blue">Title</label>
+                <input type="text" class="form-control" id="title" placeholder="Enter title">
+              </div>
+              <div class="col">
+                <label for="latitude" class="form-label text-light-blue">Latitude</label>
+                <input type="text" class="form-control" id="latitude" placeholder="Latitude">
+              </div>
+              <div class="col">
+                <label for="longitude" class="form-label text-light-blue">Longitude</label>
+                <input type="text" class="form-control" id="longitude" placeholder="Longitude">
+              </div>
+            </form>
+            <img id="selected-image" alt="Selected Media" class="row">
+            <form class="row">
+              <div class="mb-1">
+                <label for="annotations" class="form-label text-light-blue">Annotations</label>
+                <textarea class="form-control" id="annotations" rows="3" placeholder="Enter annotations"></textarea>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./scripts/index.js"></script>
+</body>
+
+</html>

@@ -1,16 +1,24 @@
 package com.example.geodemo.export;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import com.example.geodemo.media.Media;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import org.xml.sax.SAXException;
 
 /**
@@ -38,30 +46,39 @@ public class ExportController {
      * @throws TransformerException
      */
     @PostMapping("/export")
-    public void export(@RequestParam String format, // Accept as String
-                       @RequestParam(required = false) String filePath, // Make filePath optional (we will ignore it)
-                       @RequestParam String fileName)
+    public ResponseEntity<byte []> export(@RequestParam(required = true) String format, // Ensure format is required
+                                 @RequestParam(required = true) String filePath, // Make filePath required
+                                 @RequestParam String fileName)
             throws ParserConfigurationException, IOException, TransformerException {
-    
+
+        if (format == null || format.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Format parameter is required");
+        }
+
         // Convert the string to ExportFormat
         ExportFormat exportFormat = ExportFormat.valueOf(format.toUpperCase());
-    
-        // Dynamically generate file path to the user's Downloads folder
-        String homeDirectory = System.getProperty("user.home");
-        String downloadsPath = Paths.get(homeDirectory, "Downloads").toString();
-    
-        System.out.println("Exporting to: " + downloadsPath);
-    
-        // Call the service with the dynamically generated path
-        exportService.export(exportFormat, downloadsPath, fileName);
+        System.out.println("Exporting format: " + exportFormat.getExporterName());
+        Path fullPath = Paths.get(filePath, fileName);
+        System.out.println("Exporting to: " + fullPath);
+
+        ByteArrayOutputStream byteArrayOutputStream = exportService.export(exportFormat, filePath, fileName);
+        byte[] content = byteArrayOutputStream.toByteArray();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/octet-stream");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(content);
+
     }
-    
+
     // Load project state from .gmp file (also works with .kmz)
     @PostMapping("/loadProject")
-    public void importProject(@RequestParam String filePath)
+    public List<Media> importProject(@RequestParam String filePath)
             throws IOException, ParserConfigurationException, SAXException {
-        exportService.loadProject(filePath);
-
+        System.out.println("Loading filePath: " + filePath);
+        return exportService.loadProject(filePath);
     }
-
 }
