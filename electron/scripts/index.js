@@ -50,6 +50,7 @@ function handleAddMedia(filePath) {
     });
 }
 
+
 // Listen for the 'add-media' event from the main process
 window.electronAPI.addMedia((event, filePath) => {
   if (filePath) {
@@ -58,14 +59,16 @@ window.electronAPI.addMedia((event, filePath) => {
     console.error('No file path received from the main process.');
   }
 });
-
-// Listen for the 'reset-app' event from the main process
-window.electronAPI.resetApp(() => {
+function resetApp(){
   mediaItems.length = 0;
   currentSelectedMediaId = null;
   changesMade = false;
   document.getElementById('media-list').innerHTML = '';
   showDefaultMessage();
+}
+// Listen for the 'reset-app' event from the main process
+window.electronAPI.resetApp(() => {
+  resetApp();
 });
 
 // Handle the Add Media button click
@@ -223,6 +226,35 @@ function updateMediaOnBackend(mediaId) {
     console.error('Error:', error);
   });
 }
+
+window.electronAPI.openProject((mediaList)=> {
+  
+ resetApp();
+ mediaList.forEach((media)=>{
+  
+      const { uuid, title, latitude, longitude, userMediaPath, annotations } = media;
+      
+        // Create a new media object
+        const newMedia = {
+          id: mediaItems.length,
+          uuid: uuid,
+          filePath: `file://${userMediaPath}`,
+          title: title,
+          latitude: latitude,
+          longitude: longitude,
+          annotations: annotations,
+        };
+    
+        mediaItems.push(newMedia); // Add to media items array
+         // Re-render the sidebar
+         // select newly added media
+        changesMade = true; // Mark changes as made
+      
+    })
+    renderMediaList();
+    selectMedia(mediaItems.length - 1);
+ })
+ 
 
 let debounceTimeout;
 

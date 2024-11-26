@@ -2,10 +2,12 @@ package com.example.geodemo.media;
 
 import jakarta.validation.constraints.NotNull;
 
+import java.io.Serializable;
+
 /**
  * Represents Media added by the user
  */
-public class Media {
+public class Media implements Serializable {
 
     //absolute path to file in userMedia
     private String userMediaPath;

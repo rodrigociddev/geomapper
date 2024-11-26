@@ -29,7 +29,7 @@ public class KmlExporter implements Exporter {
         this.kmlBuilder = kmlBuilder;
     }
 
-    public ByteArrayOutputStream export(String filePath, String fileName) throws TransformerException, ParserConfigurationException {
+    public ByteArrayOutputStream export() throws TransformerException, ParserConfigurationException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
 

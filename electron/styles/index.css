@@ -32,7 +32,9 @@ body {
   background-color: #1b263b;
   border: 1px solid #415a77;
 }
-
+.media-block{
+  border-radius: 3px;
+}
 .media-block:hover {
   background-color: #415a77 !important;
 }

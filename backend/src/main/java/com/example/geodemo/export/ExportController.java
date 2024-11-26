@@ -39,16 +39,12 @@ public class ExportController {
     /**
      *
      * @param format   KMZ/KML/PROJECT
-     * @param filePath Export destination
-     * @param fileName File name for kml/kmz/project file
      * @throws ParserConfigurationException
      * @throws IOException
      * @throws TransformerException
      */
     @PostMapping("/export")
-    public ResponseEntity<byte []> export(@RequestParam(required = true) String format, // Ensure format is required
-                                 @RequestParam(required = true) String filePath, // Make filePath required
-                                 @RequestParam String fileName)
+    public ResponseEntity<byte []> export(@RequestParam(required = true) String format)
             throws ParserConfigurationException, IOException, TransformerException {
 
         if (format == null || format.isEmpty()) {
@@ -57,15 +53,12 @@ public class ExportController {
 
         // Convert the string to ExportFormat
         ExportFormat exportFormat = ExportFormat.valueOf(format.toUpperCase());
-        System.out.println("Exporting format: " + exportFormat.getExporterName());
-        Path fullPath = Paths.get(filePath, fileName);
-        System.out.println("Exporting to: " + fullPath);
 
-        ByteArrayOutputStream byteArrayOutputStream = exportService.export(exportFormat, filePath, fileName);
+
+        ByteArrayOutputStream byteArrayOutputStream = exportService.export(exportFormat);
         byte[] content = byteArrayOutputStream.toByteArray();
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
         headers.add(HttpHeaders.CONTENT_TYPE, "application/octet-stream");
 
         return ResponseEntity.ok()

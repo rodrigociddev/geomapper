@@ -16,5 +16,5 @@ import java.io.IOException;
  */
 public interface Exporter {
 
-    ByteArrayOutputStream export(String filePath, String fileName) throws TransformerException, ParserConfigurationException, IOException;
+    ByteArrayOutputStream export() throws TransformerException, ParserConfigurationException, IOException;
 }

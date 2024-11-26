@@ -31,9 +31,9 @@ public class ExportService {
         this.importer = importer;
     }
     //Calls export() on the exporter type specified by @param type
-    public ByteArrayOutputStream export(ExportFormat format, String filePath, String fileName) throws ParserConfigurationException, IOException, TransformerException {
+    public ByteArrayOutputStream export(ExportFormat format) throws ParserConfigurationException, IOException, TransformerException {
         Exporter exporter = exporters.get(format.getExporterName());
-        return exporter.export(filePath,fileName);
+        return exporter.export();
     }
     //load .gmp
     public List<Media> loadProject(String filePath) throws IOException, ParserConfigurationException, SAXException {

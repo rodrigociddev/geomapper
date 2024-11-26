@@ -40,7 +40,7 @@ public class  KmzExporter implements Exporter {
     }
 
     @Override
-    public ByteArrayOutputStream export(String filePath, String fileName) throws TransformerException, ParserConfigurationException, IOException {
+    public ByteArrayOutputStream export() throws TransformerException, ParserConfigurationException, IOException {
         KmlDom kmlDom = kmlBuilder.buildKML();
         Document dom = kmlDom.getKmlDoc();
 
@@ -62,7 +62,7 @@ public class  KmzExporter implements Exporter {
         }
 
         //write kml to the zip file
-       return buildArchive(dom,new File(System.getProperty("user.dir")+File.separator+"userMedia"), filePath, fileName);
+       return buildArchive(dom,new File(System.getProperty("user.dir")+File.separator+"userMedia"));
 
     }
 
@@ -70,12 +70,10 @@ public class  KmzExporter implements Exporter {
      *
      * @param dom KML document object model
      * @param mediaDir directory where our media is stored on disk
-     * @param filePath export path
-     * @param fileName KMZ filename
      * @throws IOException
      * @throws TransformerConfigurationException
      */
-    protected ByteArrayOutputStream buildArchive(Document dom, File mediaDir, String filePath, String fileName) throws IOException, TransformerConfigurationException {
+    protected ByteArrayOutputStream buildArchive(Document dom, File mediaDir) throws IOException, TransformerConfigurationException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         ZipOutputStream zipOut = new ZipOutputStream(byteArrayOutputStream);

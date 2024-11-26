@@ -72,11 +72,6 @@ public class Project {
             return false;}
     }
 
-    //returns all media
-    public List<Media> getProjectList() {
-        return mediaList;
-    }
-
     //looking up by name through hashmap
     public Media getMediaByID(String id) {
         return mediaLookUp.get(id);

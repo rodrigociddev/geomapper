@@ -111,8 +111,8 @@ public class ProjectService {
         mediaList.append("Media List:\n");
         int order = 0;
 
-        for (int i = project.getProjectList().size() - 1; i >= 0; i--) {
-            Media media = project.getProjectList().get(i);
+        for (int i = project.getMediaList().size() - 1; i >= 0; i--) {
+            Media media = project.getMediaList().get(i);
             order += 1;
             mediaList.append(order)
                     .append(". Media Name: ")

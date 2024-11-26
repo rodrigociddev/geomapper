@@ -24,7 +24,7 @@ public class KmlBuilder {
     }
     public KmlDom buildKML() throws ParserConfigurationException {
 
-        List < Media > mediaList = project.getProjectList();
+        List < Media > mediaList = project.getMediaList();
 
         System.out.println(mediaList.size());
         KmlDom kml = new KmlDom(project.getName());

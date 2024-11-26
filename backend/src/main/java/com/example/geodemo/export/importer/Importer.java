@@ -4,12 +4,7 @@ import com.example.geodemo.media.Media;
 import com.example.geodemo.project.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.nio.file.Files;
@@ -36,7 +31,8 @@ public class Importer {
         this.project = project;
     }
 
-    public List<Media> load(String filePath) throws IOException, SAXException, ParserConfigurationException {
+    public List<Media> load(String filePath) throws IOException, ParserConfigurationException {
+        project.reset();
         buildMedia(filePath);
         extractMedia(filePath, "userMedia");
         System.out.println(project.getMediaList().size());
@@ -44,11 +40,11 @@ public class Importer {
 
     }
 
-    private void extractMedia(String filePath, String destinationPath) throws IOException {
+    private void extractMedia(String filePath, String destinationPath){
         try(ZipFile zipFile = new ZipFile(filePath)){
 
 
-            List<ZipEntry> mediaEntries = zipFile.stream().filter(zipEntry -> zipEntry.getName().startsWith("files/")).collect(Collectors.toList());
+            List<ZipEntry> mediaEntries = zipFile.stream().filter(zipEntry -> zipEntry.getName().startsWith("userMedia/")).collect(Collectors.toList());
 
             for(ZipEntry zipEntry: mediaEntries){
 
@@ -66,52 +62,26 @@ public class Importer {
 
 
     }
-    private void buildMedia(String filePath) throws ParserConfigurationException {
-
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+    private void buildMedia(String filePath){
 
 
         try(ZipFile zipFile = new ZipFile(filePath)){
-            ZipEntry kmlEntry =  zipFile.getEntry("doc.kml");
+            ZipEntry mediaListEntry =  zipFile.getEntry("mediaList");
 
-            if(kmlEntry == null){
-                System.out.println("no doc.kml");
+            if(mediaListEntry == null){
+                System.out.println("no mediaList");
                 return;
             }
 
-            InputStream kmlInputStream = zipFile.getInputStream(kmlEntry);
-            Document kmlDoc = documentBuilder.parse(kmlInputStream);
-
-            System.out.println("namespace uri: "+ kmlDoc.getDocumentElement().getNamespaceURI());
-            System.out.println(kmlDoc.getDocumentElement().getTextContent());
-
-            String kmlNamespaceUri = "http://www.opengis.net/kml/2.2";
-            NodeList placeMarks = kmlDoc.getDocumentElement().getElementsByTagNameNS(kmlNamespaceUri, "Placemark");
-            System.out.println("Placemarks: " + placeMarks.getLength());
-
-            for(int i =0;i< placeMarks.getLength();i++){
-
-                Element placeMark = (Element)placeMarks.item(i);
-
-                String name = placeMark.getElementsByTagNameNS(kmlNamespaceUri, "name").item(0).getTextContent();
-
-                String description = placeMark.getElementsByTagNameNS(kmlNamespaceUri, "description").item(0).getTextContent();
-
-
-                String coordinates = placeMark.getElementsByTagNameNS(kmlNamespaceUri, "coordinates").item(0).getTextContent();
-                String longitude = coordinates.split(",")[0];
-                String latitude = coordinates.split(",")[1];
-
-                System.out.println("adding media: " + name);
-                Media media = new Media(Double.parseDouble(longitude), Double.parseDouble(latitude),name,description);
+            ObjectInputStream inputStream = new ObjectInputStream(zipFile.getInputStream(mediaListEntry));
+            List<Media> mediaList = (List<Media>)inputStream.readObject();
+            mediaList.forEach((media) -> {
                 media.setUUID(UUID.randomUUID().toString());
                 project.addMedia(media);
+            });
 
 
 
-            }
 
 
         }catch(Exception e){
