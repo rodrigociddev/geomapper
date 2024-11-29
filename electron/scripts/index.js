@@ -269,6 +269,7 @@ function debounce(func, wait) {
 document.getElementById('title').addEventListener('input', debounce((event) => {
   if (currentSelectedMediaId !== null) {
     updateMediaDetails(currentSelectedMediaId, 'title', event.target.value);
+    document.querySelector(`.media-block[data-id="${currentSelectedMediaId}"]`).querySelector('.mb-1').innerText = event.target.value;
   }
 }, 300));
 
