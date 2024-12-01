@@ -108,6 +108,7 @@ _site/
 activemq-data
 bin
 build
+dist/
 !/**/src/**/bin
 !/**/src/**/build
 build.log

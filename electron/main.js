@@ -2,19 +2,31 @@ const { app, BrowserWindow, Menu, dialog, ipcMain } = require('electron');
 const path = require('path');
 const axios = require('axios');
 const fs = require('fs');
+const { exec, execSync } = require('child_process');
 
 let mainWindow;
+let backendProcess;
 
 app.on('ready', () => {
+  const backendPath = path.join(process.resourcesPath, 'geomapper-backend-0.1.jar');
+  console.log(`Backend JAR path: ${backendPath}`); // Log the backend JAR path
+  backendProcess = exec(`java -jar ${backendPath}`, (err, stdout, stderr) => {
+    if (err) {
+      console.error(`Error starting backend: ${err}`);
+      return;
+    }
+    console.log(`Backend stdout: ${stdout}`);
+    console.error(`Backend stderr: ${stderr}`);
+  });
+  
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
-    icon: path.join(__dirname, './assets/globeicon.png'), // Set the icon here
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       enableRemoteModule: false,
-      sandbox:false
+      sandbox: false
     },
   });
 
@@ -41,6 +53,7 @@ app.on('ready', () => {
 });
 
 function createMenuTemplate() {
+  const isProduction = process.env.NODE_ENV === 'production';
   return [
     {
       label: 'File',
@@ -69,14 +82,14 @@ function createMenuTemplate() {
       submenu: [
         { label: 'Reload', role: 'reload' },
         { label: 'Force Reload', role: 'forceReload' },
-        { label: 'Toggle Developer Tools', role: 'toggleDevTools' },
+        !isProduction && { label: 'Toggle Developer Tools', role: 'toggleDevTools' },
         { type: 'separator' },
         { label: 'Actual Size', role: 'resetZoom' },
         { label: 'Zoom In', role: 'zoomIn' },
         { label: 'Zoom Out', role: 'zoomOut' },
         { type: 'separator' },
         { label: 'Toggle Fullscreen', role: 'togglefullscreen' },
-      ],
+      ].filter(Boolean),
     },
     {
       label: 'Window',
@@ -143,13 +156,13 @@ function saveProject() {
             },
             responseType: 'arraybuffer'
           })
-          .then(response => {
-            console.log('Project saved successfully:', response.data);
-            fs.writeFileSync(filePath, Buffer.from(response.data));
-          })
-          .catch(error => {
-            console.error('Error saving project:', error.response?.data || error.message);
-          });
+            .then(response => {
+              console.log('Project saved successfully:', response.data);
+              fs.writeFileSync(filePath, Buffer.from(response.data));
+            })
+            .catch(error => {
+              console.error('Error saving project:', error.response?.data || error.message);
+            });
         }
       })
       .catch((err) => console.error('Error saving project:', err));
@@ -169,13 +182,13 @@ function openProject() {
         axios.post('http://localhost:8080/loadProject', null, {
           params: { filePath: filePath }
         })
-        .then(response => {
-          console.log('Project loaded successfully:', response.data); // Debugging comment
-          mainWindow.webContents.send('open-project', response.data); // Send loaded data to renderer process
-        })
-        .catch(error => {
-          console.error('Error loading project:', error.response?.data || error.message); // Debugging comment
-        });
+          .then(response => {
+            console.log('Project loaded successfully:', response.data); // Debugging comment
+            mainWindow.webContents.send('open-project', response.data); // Send loaded data to renderer process
+          })
+          .catch(error => {
+            console.error('Error loading project:', error.response?.data || error.message); // Debugging comment
+          });
       }
     })
     .catch((err) => console.error('Error opening project:', err)); // Debugging comment
@@ -216,7 +229,7 @@ function resetApp() {
       console.error('Failed to initialize new project:', error.response?.data || error.message);
     });
   mainWindow.webContents.send('reset-app');
-  
+
 }
 
 
@@ -255,13 +268,13 @@ function exportKML() {
               fileName: path.basename(filePath)
             }
           })
-          .then(response => {
-            console.log('KML exported successfully:', response.data);
-            fs.writeFileSync(filePath, response.data);
-          })
-          .catch(error => {
-            console.error('Error exporting KML:', error.response?.data || error.message);
-          });
+            .then(response => {
+              console.log('KML exported successfully:', response.data);
+              fs.writeFileSync(filePath, response.data);
+            })
+            .catch(error => {
+              console.error('Error exporting KML:', error.response?.data || error.message);
+            });
         }
       })
       .catch((err) => console.error('Error exporting KML:', err));
@@ -287,15 +300,15 @@ function exportKMZ() {
               filePath: path.dirname(filePath),
               fileName: path.basename(filePath)
             },
-            responseType:'arraybuffer'
+            responseType: 'arraybuffer'
           })
-          .then(response => {
-            console.log('KMZ exported successfully:', response.data);
-            fs.writeFileSync(filePath, Buffer.from(response.data));
-          })
-          .catch(error => {
-            console.error('Error exporting KMZ:', error.response?.data || error.message);
-          });
+            .then(response => {
+              console.log('KMZ exported successfully:', response.data);
+              fs.writeFileSync(filePath, Buffer.from(response.data));
+            })
+            .catch(error => {
+              console.error('Error exporting KMZ:', error.response?.data || error.message);
+            });
         }
       })
       .catch((err) => console.error('Error exporting KMZ:', err));
@@ -320,17 +333,17 @@ function exportFile(format) {
             fileName: path.basename(filePath)
           }
         })
-        .then(response => {
-          console.log(`${format} exported successfully:`, response.data);
-          fs.writeFileSync(filePath, response.data);
-        })
-        .catch(error => {
-          if (error.response && error.response.data.includes('ExistsException')) {
-            console.error(`Error exporting ${format}: File already exists.`);
-          } else {
-            console.error(`Error exporting ${format}:`, error.response?.data || error.message);
-          }
-        });
+          .then(response => {
+            console.log(`${format} exported successfully:`, response.data);
+            fs.writeFileSync(filePath, response.data);
+          })
+          .catch(error => {
+            if (error.response && error.response.data.includes('ExistsException')) {
+              console.error(`Error exporting ${format}: File already exists.`);
+            } else {
+              console.error(`Error exporting ${format}:`, error.response?.data || error.message);
+            }
+          });
       }
     })
     .catch((err) => console.error(`Error exporting ${format}:`, err));
@@ -363,3 +376,4 @@ function showAboutDialog() {
     detail: 'Version: 1.0.0\nAuthors: Christopher Alfonso, Alexander Delgado, Nicholas Garcia, Alex Sebastian Jong A Kiem, Rodrigo Lopes',
   });
 }
+
