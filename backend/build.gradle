@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.example'
-version = '0.0.1-SNAPSHOT'
+version = '0.1'
 
 java {
 	toolchain {
@@ -36,3 +36,11 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+task copyJarToResources(type: Copy) {
+    dependsOn bootJar
+    from "$buildDir/libs/geomapper-backend-0.1.jar"
+    into "$rootDir/../electron/node_modules/electron/dist/resources"
+}
+
+build.dependsOn(copyJarToResources)
