@@ -32,6 +32,19 @@ The backend is implemented using **Spring Boot**, a Java framework for building 
 1. Navigate to the backend directory: `cd backend`
 2. Run the backend service: `./gradlew bootRun`
 
+## Packaging
+### Steps:
+1. Navigate to the Electron directory: `cd electron`
+2. Run the npm build script `npm run build`
+3. Navigate to the dist directory `cd dist`
+4. Run GeoMapper Setup.exe
+5. The application is now downloaded on to your system and runnable.
+
+*view the package.json to make further changes to building*
+*there is a known issue right now where the application stays open after closing, force close it using task manager to resolve this*
+
+---
+
 ## Useful Resources
 - [Electron.js Documentation](https://www.electronjs.org/docs/latest): Comprehensive guide for building desktop applications using Electron.js.
 - [Spring Boot Documentation](https://spring.io/projects/spring-boot): Official documentation for creating robust Java-based backend services with Spring Boot.
