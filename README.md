@@ -40,7 +40,7 @@ The backend is implemented using **Spring Boot**, a Java framework for building 
 4. Run GeoMapper Setup.exe
 5. The application is now downloaded on to your system and runnable.
 
-*view the package.json to make further changes to building*
+*view the package.json to make further changes to building* \
 *there is a known issue right now where the application stays open after closing, force close it using task manager to resolve this*
 
 ---
